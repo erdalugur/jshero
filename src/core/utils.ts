@@ -2,11 +2,11 @@ import { AppModule } from "jshero-decorators";
 import { RootModule } from "../modules";
 import META_KEYS from "jshero-constants";
 
-export function getModule <T>(module: Object) {
+function getModule <T>(module: Object) {
   return (Reflect.getMetadata(META_KEYS.APP_MODULE, module) || []) as T
 }
 
-export const providers = getModule<Function[]>(RootModule)
+const providers = getModule<Function[]>(RootModule)
 
 export function getReducers (){
   const reducers: Record<string, any> = {}

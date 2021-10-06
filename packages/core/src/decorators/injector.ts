@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import META_KEYS from 'jshero-constants';
-import { InjectPerRequest } from './types'
+import { InjectPerRequest } from '../types'
 
 // eslint-disable-next-line new-parens
 export const Injector = new class {

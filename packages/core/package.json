@@ -1,7 +1,7 @@
 {
-  "name": "jshero-decorators",
-  "version": "1.0.4",
-  "description": "jshero decorators package",
+  "name": "jshero-core",
+  "version": "1.0.0",
+  "description": "jshero core package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "keywords": [],

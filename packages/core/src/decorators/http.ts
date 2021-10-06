@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import META_KEYS from 'jshero-constants';
-import { RouteDefinition, MethodDefinition, HttpMethods } from './types'
+import { RouteDefinition, MethodDefinition, HttpMethods } from '../types'
 
 function makeRouteMethod (options: MethodDefinition): MethodDecorator {
   return (target, propertyKey, descriptor) => {
