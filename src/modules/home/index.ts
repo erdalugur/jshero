@@ -1,4 +1,4 @@
-import { Module } from '../../core/decorators/module'
+import { Module } from '../../core'
 import { View } from './view'
 import { Controller } from './controller'
 import { reducer } from './reducer'

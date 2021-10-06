@@ -1,6 +1,5 @@
-import { HomeModule } from './home'
 import { Module } from '../core'
-
+import { HomeModule } from './home'
 @Module({
   providers: [
     HomeModule
