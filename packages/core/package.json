@@ -1,6 +1,6 @@
 {
   "name": "jshero-core",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "jshero core package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -20,6 +20,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "jshero-constants": "^1.0.2"
+    "jshero-constants": "^1.0.2",
+    "reflect-metadata": "^0.1.13"
   }
 }
