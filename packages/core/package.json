@@ -1,6 +1,6 @@
 {
   "name": "jshero-core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "jshero core package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
