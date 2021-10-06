@@ -20,9 +20,19 @@ cd my-project
 #
 ## Modül oluşturmak
 ```
-jshero -m mymodule
+jshero -m mymodule 
 ```
 #
+Yeni bir modul aşağıdaki dosyalar ile birlikte oluşur.
+- Model.ts
+- View.tsx
+- Controller.ts
+- Style.ts
+- Reducer.ts
+- Index.ts
+
+> Not: Oluşturulan modul uygulamada kullanıma açılması için RootModule kaydedilmelidir 
+ve sonrasında **npm build** komutu çalıştırılmalıdır.
 ## Modülü RootModule dahil etmek
 
 ```javascript
@@ -36,17 +46,17 @@ import { MyModule } from './mymodule'
 })
 export class RootModule {}
 ```
-
-Not: Oluşturulan moduller uygulamada kullanıma açılması için RootModule kaydedilmelidir 
-ve sonrasında npm build komutu çalıştırılmalıdır.
 Yapılan bu işlemden sonra;
 
-kullanıcının görebileceği server side render edilmiş sayfa;
+kullanıcının görebileceği server side render edilen sayfa;
 > http://localhost:5000/mymodule
 
 api isteklerinde kullanılabilecek
 > http://localhost:5000/api/mymodule
 
 rotalar oluşur.
-
 #
+## Geliştirmelerde Dikkat Edilmesi Gerekenler
+- Client side değişiklikler(Controller hariç) anlık olarak izlenmek için **npm run dev** komutu çalıştırılmalıdır.
+- Server side değişiklikler için **npm run server** komutu çalıştırılması yeterlidir.
+- Client side değişikliklerinin server'da izlenmesi için **npm run build** komutu ile build edilmelidir.
