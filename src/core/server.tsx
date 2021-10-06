@@ -3,12 +3,11 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { configureStore } from '../store'
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler } from './decorators'
+import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, AppModule } from 'jshero-decorators'
 import { createApp } from './main'
 import { Router } from 'express'
 import fs from 'fs'
 import path from 'path'
-import { AppModule } from './types'
 import { getModules } from './utils'
 
 export function useMiddeware () {
@@ -25,25 +24,25 @@ export function useMiddeware () {
         </StaticRouter>
       </JssProvider>
     )
-    function render (){
-      return template
-      .replace('<style type="text/css" id="server-side-styles">', `
-        <style type="text/css" id="server-side-styles">
-          ${sheets.toString()}
-        </style>
-      `)
-      .replace('<div id="root"></div>', `
-      <div id="root">${html}</div>
-      <script>
-        window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
-          /</g,
-          '\\u003c'
-        )}
-      </script>
-      `)
-    }
     return {
-      render
+      render (){
+        return template
+        .replace('<title></title>', initialState?.meta?.title || '')
+        .replace('<style type="text/css" id="server-side-styles">', `
+          <style type="text/css" id="server-side-styles">
+            ${sheets.toString()}
+          </style>
+        `)
+        .replace('<div id="root"></div>', `
+        <div id="root">${html}</div>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
+            /</g,
+            '\\u003c'
+          )}
+        </script>
+        `)
+      }
     }
   }
 

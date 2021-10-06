@@ -1,6 +1,6 @@
-import { AppModule } from "./types";
+import { AppModule } from "jshero-decorators";
 import { RootModule } from "../modules";
-import { META_KEYS } from "./constants";
+import META_KEYS from "jshero-constants";
 
 export function getModule <T>(module: Object) {
   return (Reflect.getMetadata(META_KEYS.APP_MODULE, module) || []) as T

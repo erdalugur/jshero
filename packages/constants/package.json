@@ -1,12 +1,12 @@
 {
-  "name": "jshero-decorators",
-  "version": "1.0.4",
-  "description": "jshero decorators package",
+  "name": "jshero-constants",
+  "version": "1.0.2",
+  "description": "jshero constants package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "keywords": [],
   "license": "ISC",
-  "source": "src/index.ts",
+  "source": "index.js",
   "author": "Uğur Erdal",
   "repository": {
     "type": "git",
@@ -18,8 +18,5 @@
   "homepage": "https://github.com/erdalugur/jshero",
   "scripts": {
     "build": "tsc"
-  },
-  "dependencies": {
-    "jshero-constants": "^1.0.2"
   }
 }

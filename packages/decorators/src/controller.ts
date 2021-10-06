@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { Injector } from './injector';
-import { META_KEYS } from '../constants';
-import { ControllerOptions, RouteDefinition } from '../types'
+import META_KEYS from 'jshero-constants';
+import { ControllerOptions, RouteDefinition } from './types'
 
 export function Controller ({ prefix = ''}: ControllerOptions): ClassDecorator {
   return (target: Function) => {

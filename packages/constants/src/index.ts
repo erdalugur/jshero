@@ -1,4 +1,4 @@
-export const META_KEYS = {
+export default {
   ROUTES: 'symbol:routes',
   PARAM: 'symbol:param',
   REQUEST: 'symbol:request',
@@ -6,9 +6,6 @@ export const META_KEYS = {
   NEXT: 'symbol:next',
   BODY: 'symbol:body',
   PREFIX: 'symbol:prefix',
-  VIEW_MODULES: 'symbol:view:modules',
   VIEW_HANDLER: 'symbol:view:handler',
-  VIEW_MODULE: 'symbol:view:module',
   APP_MODULE: 'symbol:module'
 }
-  

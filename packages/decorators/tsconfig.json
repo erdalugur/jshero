@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./build",
+    "target": "ES5",
+    "experimentalDecorators": true,
+    "declaration": true
+  }
+}

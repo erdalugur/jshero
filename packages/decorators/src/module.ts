@@ -1,5 +1,5 @@
-import { META_KEYS } from ".."
-import { AppModule, BaseModule } from "../types"
+import META_KEYS from "jshero-constants"
+import { AppModule, BaseModule } from "./types"
 
 export function Module (options: BaseModule): ClassDecorator
 export function Module (options: AppModule): ClassDecorator
