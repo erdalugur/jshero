@@ -4,9 +4,9 @@ import { useStyles } from './style'
 export function View () {
   const classes = useStyles()
   return(
-    <div>
-      Home Page
-      <button className={classes.button}>button</button>
+    <div className={classes.container}>
+      <h1>JSHERO</h1>
+      <p>Hoş Geldiniz</p>
     </div>
   )
 }
