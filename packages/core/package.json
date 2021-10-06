@@ -1,9 +1,9 @@
 {
   "name": "jshero-core",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "jshero core package",
   "main": "build/index.js",
-  "types": "types/index.d.ts",
+  "typings": "types/index.d.ts",
   "keywords": [],
   "license": "ISC",
   "source": "src/index.ts",
