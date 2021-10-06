@@ -17,6 +17,11 @@ jshero -i my-project
 
 cd my-project
 ```
+## Projeyi Başlatmak
+```
+npm run dev // client tarafı için
+npm run server // server tarafı için
+```
 #
 ## Modül oluşturmak
 ```
@@ -56,6 +61,14 @@ api isteklerinde kullanılabilecek
 
 rotalar oluşur.
 #
+
+## Projeyi Build Etmek
+```
+npm run build // client tarafı için
+npm run build:s // server tarafı için
+```
+#
+
 ## Geliştirmelerde Dikkat Edilmesi Gerekenler
 - Client side değişiklikler(Controller hariç) anlık olarak izlenmek için **npm run dev** komutu çalıştırılmalıdır.
 - Server side değişiklikler için **npm run server** komutu çalıştırılması yeterlidir.
