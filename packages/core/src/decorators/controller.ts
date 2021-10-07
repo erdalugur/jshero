@@ -3,10 +3,9 @@ import { Injector } from './injector';
 import META_KEYS from 'jshero-constants';
 import { ControllerOptions, RouteDefinition } from '../types'
 
-export function Controller ({ prefix = ''}: ControllerOptions): ClassDecorator {
-  return (target: Function) => {
-    prefix = prefix ? prefix : target.name
-    
+export function Controller (options?: ControllerOptions): ClassDecorator {
+  return (target: Function) => {    
+    const prefix = options && options.prefix || ''
     Reflect.defineMetadata(META_KEYS.PREFIX, prefix, target);
     
     if (! Reflect.hasMetadata(META_KEYS.ROUTES, target)) {

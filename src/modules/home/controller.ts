@@ -1,15 +1,15 @@
-import { Get, ViewHandler } from "jshero-core";
+import { Get, ViewHandler, Controller } from "jshero-core";
+import { PageService } from "../../services/pageService";
 import { PageState } from "../../types";
 
-export class Controller {
+@Controller()
+export class HomeController {
+  constructor(
+    private pageService: PageService
+  ){}
   @ViewHandler()
   @Get()
-  handler (): PageState {
-    return {
-      meta: {
-        title: 'Home Page Title'
-      },
-      props: {}
-    }
+  async handler (): Promise<PageState> {
+    return this.pageService.getPageData('home') as Promise<PageState>
   }
 }
