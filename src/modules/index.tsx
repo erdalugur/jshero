@@ -1,4 +1,4 @@
-import { Module } from 'jshero-decorators'
+import { Module } from 'jshero-core'
 import { HomeModule } from './home'
 @Module({
   providers: [

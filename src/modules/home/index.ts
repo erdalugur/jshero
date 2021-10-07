@@ -1,4 +1,4 @@
-import { Module } from 'jshero-decorators'
+import { Module } from 'jshero-core'
 import { View } from './view'
 import { Controller } from './controller'
 import { reducer } from './reducer'

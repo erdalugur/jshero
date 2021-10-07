@@ -1,4 +1,4 @@
-import { Get, ViewHandler } from "jshero-decorators";
+import { Get, ViewHandler } from "jshero-core";
 import { PageState } from "../../types";
 
 export class Controller {
