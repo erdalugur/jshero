@@ -2,6 +2,7 @@
 import { useMiddeware } from './core/server'
 import express from 'express'
 import path from 'path'
+import fs from 'fs'
 import { RootModule } from './modules'
 
 function Bootstrap () {
@@ -12,8 +13,11 @@ function Bootstrap () {
 
   app.get('*.*', express.static(staticFolder, { maxAge: '1y' }))
 
+  const indexHtml = fs.readFileSync(`${staticFolder}/index.html`, { encoding: 'utf-8'})
+
   app.use(useMiddeware({
-    bootstrap: RootModule
+    bootstrap: RootModule,
+    template: indexHtml
   }))
   
   app.listen(5000, () => {

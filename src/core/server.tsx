@@ -6,17 +6,15 @@ import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolv
 import { configureStore } from '../store'
 import { createApp } from './main'
 import { Router } from 'express'
-import fs from 'fs'
-import path from 'path'
 
 interface Middeware {
   bootstrap: object
+  template: string
 }
 export function useMiddeware (options: Middeware) {
   const { modules, reducers } = resolveBootstrap(options.bootstrap)
   const router = Router()
 
-  const template = fs.readFileSync(`${path.resolve(process.cwd())}/build/output/index.html`, { encoding: 'utf-8'})
   function createRenderer (url: string, initialState: any) {
     const store = configureStore(initialState, reducers)
     const sheets = new SheetsRegistry()
@@ -29,7 +27,7 @@ export function useMiddeware (options: Middeware) {
     )
     return {
       render (){
-        return template
+        return options.template
         .replace('<title></title>', initialState?.meta?.title || '')
         .replace('<style type="text/css" id="server-side-styles">', `
           <style type="text/css" id="server-side-styles">
