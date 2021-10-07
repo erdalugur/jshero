@@ -1,10 +1,17 @@
-
 export enum HttpMethods {
   GET = 'get',
   POST = 'post',
   PUT = 'put',
   OPTIONS = 'options',
   DELETE = 'delete'
+}
+
+export enum HttpStatusCode {
+  BadRequest = 400,
+  UnAuthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  InternalServer = 500
 }
   
 export interface RouteDefinition {
