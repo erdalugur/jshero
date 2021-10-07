@@ -1,5 +1,5 @@
 
-import { useMiddeware } from './core/server'
+import { useMiddeware } from './platform/server'
 import express from 'express'
 import path from 'path'
 import fs from 'fs'
