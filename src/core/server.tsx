@@ -1,26 +1,29 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
-import { configureStore } from '../store'
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, AppModule } from 'jshero-decorators'
+import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, resolveBootstrap } from 'jshero-core'
+import { configureStore } from '../store'
 import { createApp } from './main'
 import { Router } from 'express'
 import fs from 'fs'
 import path from 'path'
-import { getModules } from './utils'
 
-export function useMiddeware () {
+interface Middeware {
+  bootstrap: object
+}
+export function useMiddeware (options: Middeware) {
+  const { modules, reducers } = resolveBootstrap(options.bootstrap)
   const router = Router()
 
   const template = fs.readFileSync(`${path.resolve(process.cwd())}/build/output/index.html`, { encoding: 'utf-8'})
   function createRenderer (url: string, initialState: any) {
-    const store = configureStore(initialState)
+    const store = configureStore(initialState, reducers)
     const sheets = new SheetsRegistry()
     const html = renderToString(
       <JssProvider registry={sheets}>
         <StaticRouter location={url}>
-          { createApp(store)}
+          { createApp(store as any, modules)}
         </StaticRouter>
       </JssProvider>
     )
@@ -46,7 +49,6 @@ export function useMiddeware () {
     }
   }
 
-  const modules: AppModule[] = getModules()
 
   modules.forEach(x => {
     if (x.view) {

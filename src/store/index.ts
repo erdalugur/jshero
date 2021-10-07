@@ -2,12 +2,11 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
-import { getReducers } from '../core/utils'
 import { AppState } from '../types'
 
-const root = combineReducers(getReducers())
 
-export function configureStore(initialValue?: any) {
+export function configureStore(initialValue: any, reducers: any) {
+  const root = combineReducers(reducers)
   return createStore(root, initialValue, composeWithDevTools(applyMiddleware(thunk)))
 }
 

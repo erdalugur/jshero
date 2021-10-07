@@ -1,3 +1,4 @@
+import { resolveBootstrap } from 'jshero-core'
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
@@ -9,11 +10,15 @@ declare global {
     __INITIAL_STATE__: any
   }
 }
-export function createBrowserApp () {
-  const store = configureStore(window.__INITIAL_STATE__ || {})
+interface BrowserApp {
+  bootstrap: object
+}
+export function createBrowserApp (options: BrowserApp) {
+  const { modules, reducers } = resolveBootstrap(options.bootstrap)
+  const store = configureStore(window.__INITIAL_STATE__ || {}, reducers)
   hydrate(
     <BrowserRouter>
-      {createApp(store)}
+      {createApp(store as any, modules)}
     </BrowserRouter>
     ,document.querySelector('#root')
   )
