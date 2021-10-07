@@ -5,6 +5,13 @@ export declare enum HttpMethods {
     OPTIONS = "options",
     DELETE = "delete"
 }
+export declare enum HttpStatusCode {
+    BadRequest = 400,
+    UnAuthorized = 401,
+    Forbidden = 403,
+    NotFound = 404,
+    InternalServer = 500
+}
 export interface RouteDefinition {
     requestMethod: HttpMethods;
     path: string;
