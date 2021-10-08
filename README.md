@@ -61,7 +61,7 @@ kullanıcının görebileceği server side render edilen sayfa;
 api isteklerinde kullanılabilecek
 > http://localhost:5000/api/mymodule
 
-rotalar oluşur.
+şeklinde rotalar aktif olur.
 #
 
 ## Projeyi Build Etmek
