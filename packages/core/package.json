@@ -1,12 +1,11 @@
 {
   "name": "jshero-core",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "jshero core package",
-  "main": "build",
+  "main": "lib",
   "types": "types",
   "keywords": [],
   "license": "ISC",
-  "source": "src/index.ts",
   "author": "Uğur Erdal",
   "repository": {
     "type": "git",
