@@ -6,7 +6,7 @@ export function resolveBootstrap (bootstrap: object) {
     return (Reflect.getMetadata(META_KEYS.APP_MODULE, module) || []) as T
   }
   
-  const providers = getModule<Function[]>(bootstrap)
+  const { providers, configureStore } = getModule<{ providers: Function[], configureStore: Function }>(bootstrap)
   
   function getReducers (){
     const reducers: Record<string, any> = {}
@@ -27,6 +27,7 @@ export function resolveBootstrap (bootstrap: object) {
   return {
     providers,
     modules: getModules(),
-    reducers: getReducers()
+    reducers: getReducers(),
+    configureStore
   }
 }

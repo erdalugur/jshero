@@ -41,4 +41,5 @@ export interface AppModule {
 }
 export interface BaseModule {
     providers: Function[];
+    configureStore: Function;
 }

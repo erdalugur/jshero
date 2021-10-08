@@ -3,18 +3,14 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
 import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, resolveBootstrap } from 'jshero-core'
-import { configureStore } from '../store'
 import { createApp } from './main'
 import expres from 'express'
 import path from 'path'
 import fs from 'fs'
 import Bundler from 'parcel-bundler'
+import { CreateAppOptions } from './types'
 
-interface Middeware {
-  bootstrap: object
-}
-console.log(process.env['NODE_ENV'])
-async function createAsset (): Promise<{ html: string, staticFolder: string }> {
+async function createAsset (): Promise<{ template: string, staticFolder: string }> {
   const staticFolder = path.resolve(process.cwd(), 'build/output')
   let html = ''
   if (process.env['NODE_ENV'] === 'production') {
@@ -30,15 +26,16 @@ async function createAsset (): Promise<{ html: string, staticFolder: string }> {
     html = entryAsset.generated.html
   }
   
-  return { html, staticFolder }
+  return { template: html, staticFolder }
 }
-export async function createServer () {
+export async function createServer (options: CreateAppOptions) {
+  console.log(`application running ${process.env['NODE_ENV']} mode`)
   const router = expres.Router()
-  const { staticFolder, html } = await createAsset()
+  const { staticFolder, template } = await createAsset()
 
   router.get('*.*', expres.static(staticFolder))
-  function useMiddeware (options: Middeware) {
-    const { modules, reducers } = resolveBootstrap(options.bootstrap)
+  function useMiddeware () {
+    const { modules, reducers, configureStore } = resolveBootstrap(options.bootstrap)
 
     function createRenderer (url: string, initialState: any) {
       const store = configureStore(initialState, reducers)
@@ -52,7 +49,7 @@ export async function createServer () {
       )
       return {
         render (){
-          return html
+          return template
           .replace('<title></title>', initialState?.meta?.title || '')
           .replace('<style type="text/css" id="server-side-styles">', `
             <style type="text/css" id="server-side-styles">

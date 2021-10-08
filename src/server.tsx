@@ -7,10 +7,11 @@ async function Bootstrap () {
   
   const app = express()
   
-  const { useMiddeware } = await createServer()
-  app.use(useMiddeware({
+  const { useMiddeware } = await createServer({
     bootstrap: RootModule
-  }))
+  })
+
+  app.use(useMiddeware())
 
   const port = process.env['PORT'] || 5000
 
