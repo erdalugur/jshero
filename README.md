@@ -42,12 +42,15 @@ ve sonrasında **npm build** komutu çalıştırılmalıdır.
 
 ```javascript
 import { Module } from '../core'
+import { configureStore } from '../store'
 import { MyModule } from './mymodule'
+
 
 @Module({
   providers: [
     MyModule
-  ]
+  ],
+  configureStore: configureStore
 })
 export class RootModule {}
 ```
