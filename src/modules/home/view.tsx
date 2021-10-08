@@ -6,7 +6,7 @@ export function View () {
   return(
     <div className={classes.container}>
       <h1>JSHERO</h1>
-      <p>Hoş Geldiniz</p>
+      <p>Hoş Geldiniz!</p>
     </div>
   )
 }

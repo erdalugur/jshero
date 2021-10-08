@@ -8,7 +8,7 @@ export class PageService {
     }
   }
 
-  public async getPageData(page: string): Promise<unknown> {
+  public async getPageData<T>(page: string): Promise<T> {
     return this.pageMock[page]
   }
 }

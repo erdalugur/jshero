@@ -7,9 +7,10 @@ export class HomeController {
   constructor(
     private pageService: PageService
   ){}
+
   @ViewHandler()
   @Get()
-  async handler (): Promise<PageState> {
-    return this.pageService.getPageData('home') as Promise<PageState>
+  async handler () {
+    return this.pageService.getPageData<PageState>('home')
   }
 }
