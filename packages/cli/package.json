@@ -1,0 +1,36 @@
+{
+  "name": "jshero-cli",
+  "version": "1.1.2",
+  "main": "index.js",
+  "description": "jshero command line interface",
+  "source": "index.js",
+  "author": "Uğur Erdal",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erdalugur/create-jshero.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/erdalugur/create-jshero/issues"
+  },
+  "homepage": "https://github.com/erdalugur/create-jshero",
+  "preferGlobal": true,
+  "bin": {
+    "jshero": "./index.js",
+    "jshero-cli": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "baseApp": {
+    "git": "https://github.com/erdalugur/jshero.git",
+    "buildCommand": "build"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^8.2.0",
+    "ora": "^6.0.1",
+    "shelljs": "^0.8.4"
+  }
+}
