@@ -1,9 +1,9 @@
 {
   "name": "jshero-core",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "jshero core package",
-  "main": "build/index.js",
-  "types": "types/index.d.ts",
+  "main": "",
+  "types": "types",
   "keywords": [],
   "license": "ISC",
   "source": "src/index.ts",
@@ -20,7 +20,21 @@
     "build": "tsc"
   },
   "dependencies": {
+    "express": "^4.17.1",
+    "install": "^0.13.0",
     "jshero-constants": "^1.0.2",
+    "parcel-bundler": "^1.12.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "react-router-dom": "^5.3.0",
     "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/parcel-bundler": "^1.12.4",
+    "@types/react": "^17.0.25",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-router-dom": "^5.3.0"
   }
 }
