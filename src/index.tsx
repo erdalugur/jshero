@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { createBrowserApp } from './platform/browser'
+import { createBrowserApp } from 'jshero-platform/browser'
 import { RootModule } from './modules'
 
 createBrowserApp({

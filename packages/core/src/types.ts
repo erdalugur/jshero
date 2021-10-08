@@ -49,3 +49,6 @@ export interface BaseModule {
   providers: Function[]
   configureStore: Function
 }
+export interface CreateAppOptions {
+  bootstrap: object
+}

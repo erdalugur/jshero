@@ -3,12 +3,12 @@
     "jsx": "react",
     "module": "commonjs",
     "baseUrl": "./",
-    "outDir": "./build",
+    "outDir": "./",
     "target": "ES5",
     "experimentalDecorators": true,
     "declaration": true,
-    "declarationDir": "./types",
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

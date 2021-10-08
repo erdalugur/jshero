@@ -2,8 +2,8 @@ import { resolveBootstrap } from 'jshero-core'
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { createApp } from './main'
-import { CreateAppOptions } from './types'
+import { createApp } from '../main'
+import { CreateAppOptions } from '../types'
 
 declare global {
   interface Window {

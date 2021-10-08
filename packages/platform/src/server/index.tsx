@@ -3,12 +3,12 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
 import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, resolveBootstrap } from 'jshero-core'
-import { createApp } from './main'
+import { createApp } from '../main'
 import expres from 'express'
 import path from 'path'
 import fs from 'fs'
 import Bundler from 'parcel-bundler'
-import { CreateAppOptions } from './types'
+import { CreateAppOptions } from '../types'
 
 async function createAsset (): Promise<{ template: string, staticFolder: string }> {
   const staticFolder = path.resolve(process.cwd(), 'build/output')

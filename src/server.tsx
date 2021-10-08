@@ -1,5 +1,5 @@
 
-import { createServer } from './platform/server'
+import { createServer } from 'jshero-platform/server'
 import express from 'express'
 import { RootModule } from './modules'
 
@@ -12,7 +12,7 @@ async function Bootstrap () {
   })
 
   app.use(useMiddeware())
-
+  
   const port = process.env['PORT'] || 5000
 
   app.listen(port, () => {
