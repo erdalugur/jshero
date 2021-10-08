@@ -22,6 +22,11 @@ cd my-project
 npm run start
 ```
 #
+## Projeyi Build Etmek
+```
+npm run build
+```
+#
 ## Modül oluşturmak
 ```
 jshero -m mymodule 
@@ -64,8 +69,4 @@ api isteklerinde kullanılabilecek
 şeklinde rotalar aktif olur.
 #
 
-## Projeyi Build Etmek
-```
-npm run build
-```
-#
+
