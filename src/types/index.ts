@@ -8,3 +8,6 @@ export interface PageState {
 export interface AppState {
   home: PageState
 }
+export interface CreateAppOptions {
+  bootstrap: object
+}

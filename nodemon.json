@@ -1,10 +1,6 @@
 {
-  "watch": [
-    "src/**"
-  ],
+  "watch": ["src"],
   "ext": "ts,js,tsx",
-  "ignore": [
-    "src/**/*.spec.ts"
-  ],
-  "exec": "ts-node ./src/server.tsx"
+  "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
+  "exec": "ts-node ./src/server.tsx --delay 500ms"
 }

@@ -5,9 +5,10 @@
   "author": "Uğur Erdal",
   "license": "MIT",
   "scripts": {
+    "dev": "nodemon",
     "build": "node scripts/build.js",
-    "start": "node scripts/start.js",
-    "serve": "node scripts/serve.js"
+    "start": "node build/server.js",
+    "build:s": "set NODE_ENV='production' && tsc"
   },
   "dependencies": {
     "jshero-constants": "^1.0.2",
@@ -27,21 +28,47 @@
     "use-query-hook": "^1.0.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/parcel-bundler": "^1.12.4",
-    "@types/react": "^17.0.25",
-    "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.3.0",
     "@types/server": "^1.0.4",
-    "nodemon": "^2.0.13",
-    "parcel-resolver-ignore": "^1.0.2",
     "shelljs": "^0.8.4",
+    "@types/express": "^4.17.13",
+    "@types/is-object": "^1.0.2",
+    "@types/react": "^17.0.27",
+    "@types/react-dom": "^17.0.9",
+    "@types/webpack-dev-middleware": "^5.0.2",
+    "bfj": "^7.0.2",
+    "css-loader": "^6.3.0",
+    "fs-extra": "^10.0.0",
+    "html-webpack-plugin": "^5.3.2",
+    "isomorphic-style-loader": "^5.3.2",
+    "nodemon": "^2.0.13",
+    "react-dev-utils": "^11.0.4",
+    "sass": "^1.42.1",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.2.6",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-middleware": "^5.2.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "parcelIgnore": [
     "express",
     "path",
     "fs"
-  ]
+  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
