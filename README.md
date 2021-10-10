@@ -19,8 +19,12 @@ cd my-project
 ```
 ## Projeyi Başlatmak
 ```
-npm run dev // client tarafı için
-npm run server // server tarafı için
+npm run start
+```
+#
+## Projeyi Build Etmek
+```
+npm run build
 ```
 #
 ## Modül oluşturmak
@@ -62,17 +66,7 @@ kullanıcının görebileceği server side render edilen sayfa;
 api isteklerinde kullanılabilecek
 > http://localhost:5000/api/mymodule
 
-rotalar oluşur.
+şeklinde rotalar aktif olur.
 #
 
-## Projeyi Build Etmek
-```
-npm run build // client tarafı için
-npm run build:s // server tarafı için
-```
-#
 
-## Geliştirmelerde Dikkat Edilmesi Gerekenler
-- Client side değişiklikler(Controller hariç) anlık olarak izlenmek için **npm run dev** komutu çalıştırılmalıdır.
-- Server side değişiklikler için **npm run server** komutu çalıştırılması yeterlidir.
-- Client side değişikliklerinin server'da izlenmesi için **npm run build** komutu ile build edilmelidir.
