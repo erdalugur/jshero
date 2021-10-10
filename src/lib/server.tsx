@@ -10,7 +10,15 @@ import path from 'path'
 import fs from 'fs'
 import { CreateAppOptions } from '../types'
 import webpack from 'webpack'
+import fetch from 'isomorphic-fetch'
 
+if (!process.env.BROWSER) {
+  (global as any).window = { 
+    document: {}
+  };
+  global.fetch = fetch;
+  (global as any).document = { };
+}
 const router = expres.Router()
 
 function resolveApp (relativePath: string) {
@@ -19,8 +27,8 @@ function resolveApp (relativePath: string) {
 async function createAsset (): Promise<boolean> {
   return new Promise((resolve, reject) => {
     const development = process.env['NODE_ENV'] !== 'production'
-    console.log("development", development)
     if (development){
+      console.log(`application running development mode`)
       const configFactory = require(resolveApp('webpack.config.js'))
       const config = configFactory('development', 'browser')
       const compiler = webpack(config);
@@ -41,7 +49,6 @@ async function createAsset (): Promise<boolean> {
 const staticPath = resolveApp('build/browser')
 export async function createServer (options: CreateAppOptions) {
   await createAsset()
-  console.log(`application running ${process.env['NODE_ENV']} mode`)
   function useMiddeware () {
     const { modules, reducers, configureStore } = resolveBootstrap(options.bootstrap)
 
@@ -84,7 +91,6 @@ export async function createServer (options: CreateAppOptions) {
         router.get(x.path, async (req: any, res: any) => {
           const viewHandler = await resolveViewHandler(x.controller)
           const result = await viewHandler()
-          console.log('viewHandler')
           const initialState = {[x.name]: result }
           const { render } = createRenderer(req.url, initialState)
           res.send(render())

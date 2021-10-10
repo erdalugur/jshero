@@ -1,11 +1,12 @@
-
-import { createServer } from './platforms/server'
 import express from 'express'
+import { createServer } from './lib/server'
 import { RootModule } from './modules'
+import compression from 'compression'
 
 async function Bootstrap () {
   
   const app = express()
+  app.use(compression())
   
   const { useMiddeware, staticPath } = await createServer({
     bootstrap: RootModule

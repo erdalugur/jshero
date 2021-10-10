@@ -1,5 +1,5 @@
 import { Module } from 'jshero-core'
-import { configureStore } from '../store'
+import { configureStore } from '../lib'
 import { HomeModule } from './home'
 @Module({
   providers: [

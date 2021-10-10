@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals')
+const webpack = require('webpack')
 const { paths } = require('./config')
 /**
  * 
@@ -42,6 +43,12 @@ module.exports = (mode = 'development', target = 'node') => {
         inject: 'body',
         publicPath: paths.publicUrlOrPath
       }),
+      new webpack.DefinePlugin({
+        PRODUCTION: JSON.stringify(true),
+        'typeof window': JSON.stringify('object'),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.BROWSER': JSON.stringify(true),
+      })
     ],
     output: {
       filename: isProduction
@@ -62,7 +69,15 @@ module.exports = (mode = 'development', target = 'node') => {
     },
     externals: [nodeExternals()],
     module: modules,
-    resolve: resolve
+    resolve: resolve,
+    plugins: [
+      new webpack.DefinePlugin({
+        PRODUCTION: JSON.stringify(true),
+        'typeof window': JSON.stringify('object'),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.BROWSER': JSON.stringify(false),
+      })
+    ]
   }
 
   if(!isProduction){

@@ -1,5 +1,4 @@
-import 'reflect-metadata'
-import { createBrowserApp } from './platforms/browser'
+import { createBrowserApp } from './lib/browser'
 import { RootModule } from './modules'
 
 createBrowserApp({
