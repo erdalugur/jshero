@@ -2,7 +2,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals')
 const webpack = require('webpack')
-const { paths } = require('./config')
+const getClientEnvironment = require('./env')
+const paths = require('./paths')
+
 /**
  * 
  * @param {'development' | 'production'} mode 
@@ -29,9 +31,15 @@ module.exports = (mode = 'development', target = 'node') => {
     ],
   }
   const resolve = {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js']
   }
-  
+  const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1))
+  const commonEnv = {
+    ...env.stringified, 
+    PRODUCTION: JSON.stringify(true),
+    'typeof window': JSON.stringify('object'),
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }
   const browser = {
     mode: mode,
     entry: paths.appIndexJs,
@@ -44,11 +52,9 @@ module.exports = (mode = 'development', target = 'node') => {
         publicPath: paths.publicUrlOrPath
       }),
       new webpack.DefinePlugin({
-        PRODUCTION: JSON.stringify(true),
-        'typeof window': JSON.stringify('object'),
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-        'process.env.BROWSER': JSON.stringify(true),
-      })
+        ...commonEnv, 
+        'process.env.BROWSER': JSON.stringify(true)
+      }),
     ],
     output: {
       filename: isProduction
@@ -72,11 +78,9 @@ module.exports = (mode = 'development', target = 'node') => {
     resolve: resolve,
     plugins: [
       new webpack.DefinePlugin({
-        PRODUCTION: JSON.stringify(true),
-        'typeof window': JSON.stringify('object'),
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-        'process.env.BROWSER': JSON.stringify(false),
-      })
+        ...commonEnv, 
+        'process.env.BROWSER': JSON.stringify(false)
+      }),
     ]
   }
 

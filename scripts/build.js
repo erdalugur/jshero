@@ -12,12 +12,12 @@ process.on('unhandledRejection', err => {
 })
 
 // Ensure environment variables are read.
-//require('../config/env')
+require('../config/env')
 const chalk = require('react-dev-utils/chalk')
 const fs = require('fs-extra')
 const bfj = require('bfj')
 const webpack = require('webpack')
-const configFactory = require('../webpack.config')
+const configFactory = require('../config/webpack.config')
 const { paths } = require('../config')
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles')
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages')
@@ -42,67 +42,70 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1)
 }
 function exceptionChecker (err, stats, previousFileSizes) {
-  let messages = {
-    errors: [],
-    warnings: []
-  }
-  if (err) {
-    if (!err.message) {
-      return reject(err)
-    }
-
-    let errMessage = err.message
-    if (Object.prototype.hasOwnProperty.call(err, 'postcssNode')) {
-      errMessage +=
-        '\nCompileError: Begins at CSS selector ' +
-        err['postcssNode'].selector
-    }
-
-    messages = formatWebpackMessages({
-      errors: [errMessage],
+  return new Promise((resolve, reject) => {
+    let messages = {
+      errors: [],
       warnings: []
-    })
-  } else {
-    const jsonStats = stats.toJson({ all: false, warnings: true, errors: true })
-    messages = formatWebpackMessages(
-      { errors: (jsonStats.errors || []).map(x => x.message), warnings: (jsonStats.warnings || []).map(x => x.message)}
-    )
-  }
-  if (messages.errors.length) {
-    // Only keep the first error. Others are often indicative
-    // of the same problem, but confuse the reader with noise.
-    if (messages.errors.length > 1) {
-      messages.errors.length = 1
     }
-    return reject(new Error(messages.errors.join('\n\n')))
-  }
-  if (
-    process.env.CI &&
-    (typeof process.env.CI !== 'string' ||
-      process.env.CI.toLowerCase() !== 'false') &&
-    messages.warnings.length
-  ) {
-    console.log(
-      chalk.yellow(
-        '\nTreating warnings as errors because process.env.CI = true.\n' +
-          'Most CI servers set it automatically.\n'
-      )
-    )
-    return reject(new Error(messages.warnings.join('\n\n')))
-  }
-  const resolveArgs = {
-    stats,
-    previousFileSizes,
-    warnings: []
-  }
-  if (writeStatsJson) {
-    return bfj
-      .write(paths.appBuild + '/bundle-stats.json', stats.toJson())
-      .then(() => resolve(resolveArgs))
-      .catch(error => reject(new Error(error)))
-  }
+    if (err) {
+      if (!err.message) {
+        return reject(err)
+      }
 
-  return resolveArgs
+      let errMessage = err.message
+      if (Object.prototype.hasOwnProperty.call(err, 'postcssNode')) {
+        errMessage +=
+          '\nCompileError: Begins at CSS selector ' +
+          err['postcssNode'].selector
+      }
+
+      messages = formatWebpackMessages({
+        errors: [errMessage],
+        warnings: []
+      })
+    } else {
+      const jsonStats = stats.toJson({ all: false, warnings: true, errors: true })
+      messages = formatWebpackMessages(
+        { errors: (jsonStats.errors || []).map(x => x.message), 
+          warnings: (jsonStats.warnings || []).map(x => x.message)
+        }
+      )
+    }
+    if (messages.errors.length) {
+      // Only keep the first error. Others are often indicative
+      // of the same problem, but confuse the reader with noise.
+      if (messages.errors.length > 1) {
+        messages.errors.length = 1
+      }
+      return reject(new Error(messages.errors.join('\n\n')))
+    }
+    if (
+      process.env.CI &&
+      (typeof process.env.CI !== 'string' ||
+        process.env.CI.toLowerCase() !== 'false') &&
+      messages.warnings.length
+    ) {
+      console.log(
+        chalk.yellow(
+          '\nTreating warnings as errors because process.env.CI = true.\n' +
+            'Most CI servers set it automatically.\n'
+        )
+      )
+      return reject(new Error(messages.warnings.join('\n\n')))
+    }
+    const resolveArgs = {
+      stats,
+      previousFileSizes,
+      warnings: messages.warnings
+    }
+    if (writeStatsJson) {
+      return bfj
+        .write(paths.appBuild + '/bundle-stats.json', stats.toJson())
+        .then(() => resolve(resolveArgs))
+        .catch(error => reject(new Error(error)))
+    }
+    return resolve(resolveArgs)
+  })
 }
 const taskCallback = ({ stats, previousFileSizes, warnings }, buildFolder = paths.appBuild) => {
   if (warnings.length) {
@@ -119,7 +122,7 @@ const taskCallback = ({ stats, previousFileSizes, warnings }, buildFolder = path
         ' to the line before.\n'
     )
   } else {
-    console.log(chalk.green('Compiled successfully.\n'))
+    console.log(chalk.green('\n Compiled successfully.\n'))
   }
 
   console.log('File sizes after gzip:\n')
@@ -157,27 +160,34 @@ checkBrowsers(paths.appPath, isInteractive)
     // Merge with the public folder
     copyPublicFolder()
     // Start the webpack build
-    return build(previousFileSizes)
+    return build(previousFileSizes, 'browser')
   })
   .then(taskCallback, taskError)
+  .then(() => measureFileSizesBeforeBuild(paths.appServerBuild))
+  .then((previousFileSizes) => build(previousFileSizes, 'node'))
+  .then(data => taskCallback(data, paths.appServerBuild), taskError)
   .catch(err => {
     if (err && err.message) {
       console.log(err.message)
     }
     process.exit(1)
-  }).then(() => measureFileSizesBeforeBuild(paths.appServerBuild)).then((previousFileSizes) => {
-    return serverBuild(previousFileSizes)
-  }).then(data =>taskCallback(data, paths.appServerBuild), taskError)
-
+  })
 // Create the production build and print the deployment instructions.
-function build (previousFileSizes) {
-  const config = configFactory('production', 'browser')
-  console.log('Creating browser build...')
+/**
+ * 
+ * @param {any} previousFileSizes 
+ * @param {"node" | "browser"} target 
+ * @returns 
+ */
+function build (previousFileSizes, target = 'browser') {
+  const config = configFactory('production', target)
+  console.log(`Creating ${target === 'browser' ? 'browser' : 'server' } build...`)
   return new Promise((resolve, reject) => {
     const compiler = webpack(config)
     compiler.run((err, stats) => {
-      const resolveArgs = exceptionChecker(err, stats, previousFileSizes)
-      return resolve(resolveArgs)
+      exceptionChecker(err, stats, previousFileSizes)
+      .then(resolveArgs => resolve(resolveArgs))
+      .catch(e => reject(e))
     })
   })
 }
@@ -187,20 +197,6 @@ function copyPublicFolder () {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
     filter: file => file !== paths.appHtml
-  })
-}
-
-// Create the production build for server and print the deployment instructions.
-function serverBuild (previousFileSizes) {
-  console.log('Creating server build...')
-  console.log()
-  return new Promise((resolve, reject) => {
-    const config = configFactory('production', 'node')
-    const compiler = webpack(config)
-    compiler.run((err, stats) => {
-      const resolveArgs = exceptionChecker(err, stats, previousFileSizes)
-      return resolve(resolveArgs)
-    })
   })
 }
 

@@ -1,4 +1,4 @@
-import 'reflect-metadata'
+import './polyfill'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
@@ -6,30 +6,17 @@ import { JssProvider, SheetsRegistry } from 'react-jss'
 import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, resolveBootstrap } from 'jshero-core'
 import { createApp } from './main'
 import expres from 'express'
-import path from 'path'
 import fs from 'fs'
 import { CreateAppOptions } from '../types'
 import webpack from 'webpack'
-import fetch from 'isomorphic-fetch'
 
-if (!process.env.BROWSER) {
-  (global as any).window = { 
-    document: {}
-  };
-  global.fetch = fetch;
-  (global as any).document = { };
-}
 const router = expres.Router()
 
-function resolveApp (relativePath: string) {
-  return path.resolve(process.cwd(), relativePath)
-}
 async function createAsset (): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const development = process.env['NODE_ENV'] !== 'production'
-    if (development){
+    if (process.env.NODE_ENV === 'development'){
       console.log(`application running development mode`)
-      const configFactory = require(resolveApp('webpack.config.js'))
+      const configFactory = require(global.resolveApp('config/webpack.config.js'))
       const config = configFactory('development', 'browser')
       const compiler = webpack(config);
       compiler.outputFileSystem = fs;
@@ -46,7 +33,7 @@ async function createAsset (): Promise<boolean> {
   })
 }
 
-const staticPath = resolveApp('build/browser')
+const staticPath = global.resolveApp('build/browser')
 export async function createServer (options: CreateAppOptions) {
   await createAsset()
   function useMiddeware () {
