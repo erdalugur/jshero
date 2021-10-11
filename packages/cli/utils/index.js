@@ -24,7 +24,7 @@ module.exports = {
   },
   message (message) {
     console.log()
-    console.log(chalk.blue(message))
+    console.log(message)
     console.log() 
   },
   setPackageJson (projectRoot) {
