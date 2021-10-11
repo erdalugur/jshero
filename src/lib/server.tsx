@@ -3,7 +3,7 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import { getInjectionsPerRequest, Injector, resolvePrefix, resolveRoutes, resolveViewHandler, resolveBootstrap } from 'jshero-core'
+import { resolveRootModule } from 'jshero-core'
 import { createApp } from './main'
 import expres from 'express'
 import fs from 'fs'
@@ -37,7 +37,7 @@ const staticPath = global.resolveApp('build/browser')
 export async function createServer (options: CreateAppOptions) {
   await createAsset()
   function useMiddeware () {
-    const { modules, reducers, configureStore } = resolveBootstrap(options.bootstrap)
+    const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
 
     function createRenderer (url: string, initialState: any) {
       const store = configureStore(initialState, reducers)
@@ -74,24 +74,27 @@ export async function createServer (options: CreateAppOptions) {
   
 
     modules.forEach(x => {
+      const { createApiFn, fn, resolvePrefix, resolveRoutes } = resolveController(x.controller)
       if (x.view) {
-        router.get(x.path, async (req: any, res: any) => {
-          const viewHandler = await resolveViewHandler(x.controller)
-          const result = await viewHandler()
-          const initialState = {[x.name]: result }
-          const { render } = createRenderer(req.url, initialState)
-          res.send(render())
+        router.get(x.path, async (req: any, res: any, next: any) => {
+          try {
+            const result = await fn(req, res, next)
+            const initialState = {[x.name]: result }
+            const { render } = createRenderer(req.url, initialState)
+            res.send(render())
+          } catch (error) {
+            next(error)
+          }
         })
       }
       // api routes
-      const prefix = resolvePrefix(x.controller, x.path)
-      const routes = resolveRoutes(x.controller)
+      const prefix = resolvePrefix()
+      const routes = resolveRoutes()
       routes.forEach(({ methodName, requestMethod, path}) => {
-        const instance = Injector.resolve(x.controller)
         router[requestMethod](prefix + path, async (req: any, res: any, next: any) => {
           try {
-            const injections = getInjectionsPerRequest({ instance, methodName: methodName, req, res, next })
-            const result = await instance[methodName](...injections)
+            const fn = createApiFn(methodName, req, res, next)
+            const result = await fn()
             res.json(result)
           } catch (error) {
             next(error)
