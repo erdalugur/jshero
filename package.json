@@ -12,12 +12,9 @@
   },
   "dependencies": {
     "compression": "^1.7.4",
-    "global": "^4.4.0",
     "isomorphic-fetch": "^3.0.0",
     "jshero-constants": "^1.0.2",
     "jshero-core": "^1.1.9",
-    "jshero-platform": "^1.0.1",
-    "parcel-bundler": "^1.12.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-jss": "^10.8.0",
@@ -26,9 +23,7 @@
     "redux": "^4.1.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
-    "reflect-metadata": "^0.1.13",
-    "server": "^1.0.36",
-    "use-query-hook": "^1.0.2"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
@@ -52,7 +47,6 @@
     "react-dev-utils": "^11.0.4",
     "sass": "^1.42.1",
     "sass-loader": "^12.1.0",
-    "shelljs": "^0.8.4",
     "style-loader": "^3.3.0",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.2.1",
