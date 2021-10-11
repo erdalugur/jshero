@@ -52,12 +52,12 @@ export async function createServer (options: CreateAppOptions) {
       return {
         render (){
           const template = fs.readFileSync(`${staticPath}/index.html`, { encoding: 'utf-8'})
-          return template
-          .replace('<title></title>', initialState?.meta?.title || '')
-          .replace('<style id="server-side-styles">', `
-            <style type="text/css" id="server-side-styles">
-              ${sheets.toString()}
-            </style>
+          return template.replace('</head>', `
+          <title>${initialState?.meta?.title || ''}</title>
+          <style type="text/css" id="server-side-styles">
+            ${sheets.toString()}
+          </style>
+          </head>
           `)
           .replace('<div id="root"></div>', `
           <div id="root">${markup}</div>
