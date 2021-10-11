@@ -1,7 +1,41 @@
 import META_KEYS from "jshero-constants";
-import { AppModule } from "../types";
+import { AppModule, RouteDefinition } from "../types";
 
-export function resolveBootstrap (bootstrap: object) {
+import { getInjectionsPerRequest, Injector } from "../decorators";
+
+function resolveController (target: Object) {
+  const instance = Injector.resolve(target)
+  const methodName: string = Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
+  let handler: (...args: any[]) => Promise<any> = (instance[methodName] || function () { return { meta: {}, props: {}}})
+  handler = handler.bind(instance)
+
+  async function fn (req: any, res:any, next: any) {
+    const injections = getInjectionsPerRequest({ instance, methodName: methodName, req, res, next })
+    return handler(...injections)
+  }
+  function resolvePrefix (): string {
+    let prefix: string = Reflect.getMetadata(META_KEYS.PREFIX, target) || ''
+    return prefix.startsWith('/api') ? prefix : `/api${prefix}`
+  }
+  function resolveRoutes (): Array<RouteDefinition>{
+    return Reflect.getMetadata(META_KEYS.ROUTES, target) || []
+  }
+
+  function createApiFn (methodName: string, req: any, res:any, next: any) {
+    const instance = Injector.resolve(target)
+    const injections = getInjectionsPerRequest({ instance, methodName: methodName, req, res, next })
+    return async () => instance[methodName](...injections)
+  }
+  return {
+    instance,
+    fn,
+    resolveRoutes,
+    resolvePrefix,
+    createApiFn
+  }
+}
+
+export function resolveRootModule (bootstrap: object) {
   function getModule <T>(module: Object) {
     return (Reflect.getMetadata(META_KEYS.APP_MODULE, module) || []) as T
   }
@@ -28,6 +62,8 @@ export function resolveBootstrap (bootstrap: object) {
     providers,
     modules: getModules(),
     reducers: getReducers(),
-    configureStore
+    configureStore,
+    resolveController
   }
 }
+
