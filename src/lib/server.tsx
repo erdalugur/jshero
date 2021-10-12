@@ -45,7 +45,7 @@ export async function createServer (options: CreateAppOptions) {
       const markup = renderToString(
         <JssProvider registry={sheets}>
           <StaticRouter location={url}>
-            { createApp(store as any, modules)}
+            { createApp(store, modules)}
           </StaticRouter>
         </JssProvider>
       )
@@ -74,14 +74,18 @@ export async function createServer (options: CreateAppOptions) {
   
 
     modules.forEach(x => {
-      const { createApiFn, fn, resolvePrefix, resolveRoutes } = resolveController(x.controller)
+      const { fn, resolvePrefix, resolveRoutes, withOutputCache } = resolveController(x.controller)
       if (x.view) {
         router.get(x.path, async (req: any, res: any, next: any) => {
           try {
-            const result = await fn(req, res, next)
-            const initialState = {[x.name]: result }
-            const { render } = createRenderer(req.url, initialState)
-            res.send(render())
+            const cacheKey = `__${x.path}__${x.name}__`
+            const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {
+              const result = await fn(req, res, next)
+              const initialState = {[x.name]: result }
+              const { render } = createRenderer(req.url, initialState)
+              return render()
+            })
+            res.send(result)
           } catch (error) {
             next(error)
           }
@@ -93,8 +97,7 @@ export async function createServer (options: CreateAppOptions) {
       routes.forEach(({ methodName, requestMethod, path}) => {
         router[requestMethod](prefix + path, async (req: any, res: any, next: any) => {
           try {
-            const fn = createApiFn(methodName, req, res, next)
-            const result = await fn()
+            const result = await fn(req, res, next, methodName)
             res.json(result)
           } catch (error) {
             next(error)

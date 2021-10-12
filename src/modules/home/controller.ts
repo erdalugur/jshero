@@ -1,4 +1,4 @@
-import { Get, ViewHandler, Controller } from "jshero-core";
+import { Get, ViewHandler, Controller, Cache } from "jshero-core";
 import { PageService } from "../../services/pageService";
 import { PageState } from "../../types";
 
@@ -11,6 +11,14 @@ export class HomeController {
   @ViewHandler()
   @Get()
   async handler () {
+    console.log("handler", new Date())
     return this.pageService.getPageData<PageState>('home')
+  }
+
+  @Cache('yeop', 60)
+  @Get('/yeop')
+  getCachedData() {
+    console.log("/yeop", new Date())
+    return "yeop data"
   }
 }

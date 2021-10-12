@@ -43,3 +43,12 @@ export const cacheManager = {
     }
   }
 }
+
+export async function WithOutputCache(cacheKey: string, ttl: number, fn: () => Promise<any>) {
+  if(memoryCache.has(cacheKey)) {
+    return memoryCache.get(cacheKey)
+  }
+  const result = await fn()
+  memoryCache.set(cacheKey, result, ttl)
+  return result
+}

@@ -43,6 +43,7 @@ export interface AppModule {
   path: string
   name: string,
   reducer: Function
+  outputCache?: number
 }
 
 export interface BaseModule {

@@ -1,20 +1,30 @@
 import META_KEYS from "jshero-constants";
 import { AppModule, RouteDefinition } from "../types";
 import { getInjectionsPerRequest, Injector } from "../decorators";
-import { cacheManager } from "../cache";
+import { cacheManager, WithOutputCache } from "../cache";
+
 
 function resolveController (target: Object) {
-  const instance = Injector.resolve(target)
-  const methodName: string = Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
-  let handler: (...args: any[]) => Promise<any> = (instance[methodName] || function () { return { meta: {}, props: {}}})
-  handler = handler.bind(instance)
-
-  async function fn (req: any, res:any, next: any) {
+  
+  function createFn(methodName: string, req: any, res: any, next: any) {
+    const instance = Injector.resolve(target)
     const injections = getInjectionsPerRequest({ instance, methodName, req, res, next })
+    const fn = instance[methodName].bind(instance, ...injections)
     const cache = cacheManager.get<any>(target, methodName)
     if (cache)
-      return cache
-    return handler(...injections)
+      return async () => cache
+
+    return async () => {
+      const result = await fn()
+      cacheManager.set(methodName, result, target)
+      return result
+    }
+  }
+  async function fn (req: any, res:any, next: any): Promise<any>
+  async function fn (req: any, res:any, next: any, method?: string): Promise<any>
+  async function fn (req: any, res:any, next: any, method: string = ''): Promise<any> {
+    const methodName: string =  method || Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
+    return createFn(methodName, req, res, next)()
   }
   function resolvePrefix (): string {
     let prefix: string = Reflect.getMetadata(META_KEYS.PREFIX, target) || ''
@@ -23,26 +33,11 @@ function resolveController (target: Object) {
   function resolveRoutes (): Array<RouteDefinition>{
     return Reflect.getMetadata(META_KEYS.ROUTES, target) || []
   }
-
-  function createApiFn (methodName: string, req: any, res:any, next: any) {
-    const instance = Injector.resolve(target)
-    const injections = getInjectionsPerRequest({ instance, methodName, req, res, next })
-    const cache = cacheManager.get<any>(target, methodName)
-    if (cache)
-      return async () => cache
-
-    return async () => {
-      const result = await instance[methodName](...injections)
-      cacheManager.set(methodName, result, target)
-      return result
-    }
-  }
   return {
-    instance,
     fn,
     resolveRoutes,
     resolvePrefix,
-    createApiFn
+    withOutputCache: WithOutputCache
   }
 }
 

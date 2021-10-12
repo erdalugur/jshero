@@ -1,10 +1,13 @@
 import { AppModule, RouteDefinition } from "../types";
+import { WithOutputCache } from "../cache";
 declare function resolveController(target: Object): {
-    instance: any;
-    fn: (req: any, res: any, next: any) => Promise<any>;
+    fn: {
+        (req: any, res: any, next: any): Promise<any>;
+        (req: any, res: any, next: any, method?: string): Promise<any>;
+    };
     resolveRoutes: () => Array<RouteDefinition>;
     resolvePrefix: () => string;
-    createApiFn: (methodName: string, req: any, res: any, next: any) => () => Promise<any>;
+    withOutputCache: typeof WithOutputCache;
 };
 export declare function resolveRootModule(bootstrap: object): {
     providers: Function[];

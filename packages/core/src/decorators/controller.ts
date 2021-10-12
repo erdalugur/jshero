@@ -1,7 +1,6 @@
 import 'reflect-metadata'
-import { Injector } from './injector';
 import META_KEYS from 'jshero-constants';
-import { ControllerOptions, RouteDefinition } from '../types'
+import { ControllerOptions } from '../types'
 
 export function Controller (options?: ControllerOptions): ClassDecorator {
   return (target: Function) => {    
@@ -22,20 +21,4 @@ export function ViewHandler (): MethodDecorator {
     
     Reflect.defineMetadata(META_KEYS.VIEW_HANDLER, propertyKey, target.constructor)
   };
-}
-
-export function resolvePrefix (object: any, defaultValue: string): string {
-  let prefix: string = Reflect.getMetadata(META_KEYS.PREFIX, object) || defaultValue
-  return prefix.startsWith('/api') ? prefix : `/api${prefix}`
-}
-
-export function resolveViewHandler (target: any) {
-  const instance = Injector.resolve(target)
-  const methodName: string = Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
-  let method: () => Promise<any> = instance[methodName] || function () { return { meta: {}, props: {}}}
-  return method.bind(instance)
-}
-
-export function resolveRoutes (target: any): Array<RouteDefinition>{
-  return Reflect.getMetadata(META_KEYS.ROUTES, target) || []
 }
