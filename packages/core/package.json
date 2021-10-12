@@ -1,6 +1,6 @@
 {
   "name": "jshero-core",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "jshero core package",
   "main": "build",
   "types": "types",
