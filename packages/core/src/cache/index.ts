@@ -49,6 +49,7 @@ export async function WithOutputCache(cacheKey: string, ttl: number, fn: () => P
     return memoryCache.get(cacheKey)
   }
   const result = await fn()
-  memoryCache.set(cacheKey, result, ttl)
+  if (ttl > 0)
+    memoryCache.set(cacheKey, result, ttl)
   return result
 }

@@ -11,7 +11,7 @@ export class HomeController {
   @ViewHandler()
   @Get()
   async handler () {
-    console.log("handler", new Date())
+    console.log("handler asd", new Date())
     return this.pageService.getPageData<PageState>('home')
   }
 
