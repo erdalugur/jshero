@@ -1,6 +1,6 @@
 {
   "name": "jshero-core",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "jshero core package",
   "main": "build",
   "types": "types",
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "jshero-constants": "^1.0.2",
+    "node-cache": "^5.1.2",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
