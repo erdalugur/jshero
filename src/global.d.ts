@@ -10,6 +10,8 @@ declare global {
       JSHERO_DB: string
       JSHERO_USER: string
       JSHERO_PASSWORD: string
+      JSHERO_PUBLIC_URL: string
+      JSHERO_DOGS_URL: string
     }
   }
   interface Window {

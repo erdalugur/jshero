@@ -17,6 +17,6 @@ export class HomeController {
   @Cache('dogs', 60) // cached 1 min
   @Get('/dogs')
   getDogsData() {
-    return fetch('https://dog.ceo/api/breeds/list/all').then(x => x.json())
+    return fetch(process.env.JSHERO_DOGS_URL).then(x => x.json())
   }
 }
