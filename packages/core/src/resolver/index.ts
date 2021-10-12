@@ -1,7 +1,7 @@
 import META_KEYS from "jshero-constants";
 import { AppModule, RouteDefinition } from "../types";
-
 import { getInjectionsPerRequest, Injector } from "../decorators";
+import { cacheManager } from "../cache";
 
 function resolveController (target: Object) {
   const instance = Injector.resolve(target)
@@ -10,7 +10,10 @@ function resolveController (target: Object) {
   handler = handler.bind(instance)
 
   async function fn (req: any, res:any, next: any) {
-    const injections = getInjectionsPerRequest({ instance, methodName: methodName, req, res, next })
+    const injections = getInjectionsPerRequest({ instance, methodName, req, res, next })
+    const cache = cacheManager.get<any>(target, methodName)
+    if (cache)
+      return cache
     return handler(...injections)
   }
   function resolvePrefix (): string {
@@ -23,8 +26,16 @@ function resolveController (target: Object) {
 
   function createApiFn (methodName: string, req: any, res:any, next: any) {
     const instance = Injector.resolve(target)
-    const injections = getInjectionsPerRequest({ instance, methodName: methodName, req, res, next })
-    return async () => instance[methodName](...injections)
+    const injections = getInjectionsPerRequest({ instance, methodName, req, res, next })
+    const cache = cacheManager.get<any>(target, methodName)
+    if (cache)
+      return async () => cache
+
+    return async () => {
+      const result = await instance[methodName](...injections)
+      cacheManager.set(methodName, result, target)
+      return result
+    }
   }
   return {
     instance,
