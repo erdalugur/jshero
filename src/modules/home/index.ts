@@ -9,7 +9,6 @@ import { reducer } from './reducer'
   reducer: reducer,
   view: View,
   exact: true,
-  path: '/',
-  outputCache: 10
+  path: '/'
 })
 export class HomeModule {}

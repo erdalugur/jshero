@@ -4,11 +4,12 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
 import { resolveRootModule } from 'jshero-core'
-import { createApp } from './main'
 import expres from 'express'
 import fs from 'fs'
-import { CreateAppOptions } from '../types'
 import webpack from 'webpack'
+import { Helmet } from "react-helmet"
+import { createApp } from './main'
+import { CreateAppOptions } from '../types'
 
 const router = expres.Router()
 
@@ -51,22 +52,28 @@ export async function createServer (options: CreateAppOptions) {
       )
       return {
         render (){
+          const helmet = Helmet.renderStatic();
           const template = fs.readFileSync(`${staticPath}/index.html`, { encoding: 'utf-8'})
-          return template.replace('</head>', `
-          <title>${initialState?.meta?.title || ''}</title>
-          <style type="text/css" id="server-side-styles">
-            ${sheets.toString()}
-          </style>
-          </head>
-          `)
+          const regexp = / data-react-helmet="true"/g
+          return template
+          .replace('<html', `<html ${helmet.htmlAttributes.toString().replace(regexp, '')}`)
+          .replace('</head>', `
+            ${helmet.title.toString().replace(regexp, '')}
+            ${helmet.meta.toString().replace(regexp, '')}
+            ${helmet.link.toString().replace(regexp, '')}
+            <style type="text/css" id="server-side-styles">
+              ${sheets.toString()}
+            </style>
+          </head>`)
+          .replace('<body', `<body ${helmet.bodyAttributes.toString().replace(regexp, '')}`)
           .replace('<div id="root"></div>', `
-          <div id="root">${markup}</div>
-          <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
-              /</g,
-              '\\u003c'
-            )}
-          </script>
+            <div id="root">${markup}</div>
+            <script>
+              window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
+                /</g,
+                '\\u003c'
+              )}
+            </script>
           `)
         }
       }

@@ -11,14 +11,12 @@ export class HomeController {
   @ViewHandler()
   @Get()
   async handler () {
-    console.log("handler asd", new Date())
     return this.pageService.getPageData<PageState>('home')
   }
 
-  @Cache('yeop', 60)
-  @Get('/yeop')
-  getCachedData() {
-    console.log("/yeop", new Date())
-    return "yeop data"
+  @Cache('dogs', 60) // cached 1 min
+  @Get('/dogs')
+  getDogsData() {
+    return fetch('https://dog.ceo/api/breeds/list/all').then(x => x.json())
   }
 }
