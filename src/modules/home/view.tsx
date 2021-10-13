@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { useAppSelector } from '../../lib'
+import { useAppSelector } from 'lib'
 import { useStyles } from './style'
 
 export function View () {

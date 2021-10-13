@@ -1,6 +1,6 @@
 import { Get, ViewHandler, Controller, Cache } from "jshero-core";
-import { PageService } from "../../services/pageService";
-import { PageState } from "../../types";
+import { PageState } from "types";
+import { PageService } from "services/pageService";
 
 @Controller()
 export class HomeController {

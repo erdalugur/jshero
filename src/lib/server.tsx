@@ -9,7 +9,7 @@ import fs from 'fs'
 import webpack from 'webpack'
 import { Helmet } from "react-helmet"
 import { createApp } from './main'
-import { CreateAppOptions } from '../types'
+import { CreateAppOptions } from 'types'
 
 const router = expres.Router()
 

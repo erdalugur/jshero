@@ -31,7 +31,8 @@ module.exports = (mode = 'development', target = 'node') => {
     ],
   }
   const resolve = {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    modules: ["src", "node_modules"]
   }
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1))
   const commonEnv = {

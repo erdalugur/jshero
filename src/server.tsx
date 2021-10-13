@@ -1,6 +1,6 @@
 import express from 'express'
-import { createServer } from './lib/server'
-import { RootModule } from './modules'
+import { createServer } from 'lib/server'
+import { RootModule } from 'modules'
 import compression from 'compression'
 
 async function Bootstrap () {

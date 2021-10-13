@@ -1,4 +1,4 @@
-import { PageState } from "../../types"
+import { PageState } from "types"
 
 const initialState: PageState = {
   meta: {
