@@ -17,7 +17,7 @@ async function createAsset (): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if (process.env.NODE_ENV === 'development'){
       console.log(`application running development mode`)
-      const configFactory = require(global.resolveApp('config/webpack.config.js'))
+      const configFactory = require(resolveApp('config/webpack.config.js'))
       const config = configFactory('development', 'browser')
       const compiler = webpack(config);
       compiler.outputFileSystem = fs;
@@ -33,52 +33,53 @@ async function createAsset (): Promise<boolean> {
     resolve(true)
   })
 }
+function createRenderer (url: string, store: any, modules: any[]) {
+  const sheets = new SheetsRegistry()
+  const markup = renderToString(
+    <JssProvider registry={sheets}>
+      <StaticRouter location={url}>
+        { createApp(store, modules)}
+      </StaticRouter>
+    </JssProvider>
+  )
 
-const staticPath = global.resolveApp('build/browser')
+  return {
+    render (){
+      const template = fs.readFileSync(`${staticPath}/index.html`, { encoding: 'utf-8'})
+      const helmet = Helmet.renderStatic();
+      const regexp = / data-react-helmet="true"/g
+      const html = helmet.htmlAttributes.toString().replace(regexp, ''),
+      head = [
+        helmet.title.toString().replace(regexp, ''), 
+        helmet.meta.toString().replace(regexp, ''),
+        helmet.link.toString().replace(regexp, '')
+      ].join(''),
+      body = helmet.bodyAttributes.toString().replace(regexp, ''),
+      script = helmet.script.toString().replace(regexp, '');
+    
+      return template
+      .replace('<html', `<html ${html}`)
+      .replace('</head>', `${head}</head>`)
+      .replace('</head>', `<style type="text/css" id="server-side-styles">${sheets.toString()}</style></head>`)
+      .replace('<body', `<body ${body}`)
+      .replace('<div id="root"></div>', `<div id="root">${markup}</div>
+      <script>
+        window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
+          /</g,
+          '\\u003c'
+        )}
+      </script>
+      `)
+      .replace('</body>', `${script}</body>`)
+      }
+  }
+}
+const staticPath = resolveApp('build/browser')
+
 export async function createServer (options: CreateAppOptions) {
   await createAsset()
   function useMiddeware () {
     const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
-
-    function createRenderer (url: string, initialState: any) {
-      const store = configureStore(initialState, reducers)
-      const sheets = new SheetsRegistry()
-      const markup = renderToString(
-        <JssProvider registry={sheets}>
-          <StaticRouter location={url}>
-            { createApp(store, modules)}
-          </StaticRouter>
-        </JssProvider>
-      )
-      return {
-        render (){
-          const helmet = Helmet.renderStatic();
-          const template = fs.readFileSync(`${staticPath}/index.html`, { encoding: 'utf-8'})
-          const regexp = / data-react-helmet="true"/g
-          return template
-          .replace('<html', `<html ${helmet.htmlAttributes.toString().replace(regexp, '')}`)
-          .replace('</head>', `
-            ${helmet.title.toString().replace(regexp, '')}
-            ${helmet.meta.toString().replace(regexp, '')}
-            ${helmet.link.toString().replace(regexp, '')}
-            <style type="text/css" id="server-side-styles">
-              ${sheets.toString()}
-            </style>
-          </head>`)
-          .replace('<body', `<body ${helmet.bodyAttributes.toString().replace(regexp, '')}`)
-          .replace('<div id="root"></div>', `
-            <div id="root">${markup}</div>
-            <script>
-              window.__INITIAL_STATE__ = ${JSON.stringify(store.getState()).replace(
-                /</g,
-                '\\u003c'
-              )}
-            </script>
-          `)
-        }
-      }
-    }
-  
 
     modules.forEach(x => {
       const { fn, resolvePrefix, resolveRoutes, withOutputCache } = resolveController(x.controller)
@@ -88,8 +89,8 @@ export async function createServer (options: CreateAppOptions) {
             const cacheKey = `__${x.path}__${x.name}__`
             const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {
               const result = await fn(req, res, next)
-              const initialState = {[x.name]: result }
-              const { render } = createRenderer(req.url, initialState)
+              const store = configureStore({[x.name]: result }, reducers)
+              const { render } = createRenderer(req.url, store, modules)
               return render()
             })
             res.send(result)

@@ -39,13 +39,30 @@ Yeni bir modul aşağıdaki dosyalar ile birlikte oluşur.
 - Style.ts
 - Reducer.ts
 - Index.ts
+```js
+// modules/mymodule/index.ts
 
-> Not: Oluşturulan modul uygulamada kullanıma açılması için RootModule kaydedilmelidir 
-ve sonrasında **npm build** komutu çalıştırılmalıdır.
+import { Module } from 'jshero-core'
+import { View } from './view'
+import { MyModuleController } from './controller'
+import { reducer } from './reducer'
+
+@Module({
+  controller: MyModuleController,
+  name: 'mymodule' as const,
+  reducer: reducer,
+  view: View,
+  exact: true,
+  path: '/mymodule',
+  // outputCache: 30, optional output caching
+})
+export class MyModule {}
+```
+> Not: Oluşturulan modul uygulamada kullanıma açılması için RootModule kaydedilmelidir.
 ## Modülü RootModule dahil etmek
 
 ```javascript
-import { Module } from '../core'
+import { Module } from 'jshero-core'
 import { configureStore } from '../store'
 import { MyModule } from './mymodule'
 
