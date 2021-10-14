@@ -3,7 +3,7 @@ import React from 'react'
 import { hydrate } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { createApp } from './main'
-import { CreateAppOptions } from '../types'
+import { CreateAppOptions } from 'types'
 
 export function createBrowserApp (options: CreateAppOptions) {
   const { modules, reducers, configureStore } = resolveRootModule(options.bootstrap)
