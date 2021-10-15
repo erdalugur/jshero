@@ -6,8 +6,8 @@
   "license": "MIT",
   "types": "./src/global.d.ts",
   "scripts": {
-    "dev": "nodemon",
-    "build": "node scripts/build.js",
+    "dev": "jshero dev",
+    "build": "jshero build",
     "start": "node build/server.js"
   },
   "dependencies": {

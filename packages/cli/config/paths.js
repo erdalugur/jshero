@@ -2,15 +2,15 @@
 
 const fs = require('fs')
 const path = require('path')
-const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath')
 const resolveApp = function (relativePath) {
   return path.resolve(process.cwd(), relativePath)
 }
-const publicUrlOrPath = getPublicUrlOrPath(
-  process.env.NODE_ENV === 'development',
-  require(resolveApp('package.json')).homepage,
-  process.env.PUBLIC_URL
-)
+const publicUrlOrPath = process.env.PUBLIC_URL || ''
+// getPublicUrlOrPath(
+//   process.env.NODE_ENV === 'development',
+//   require(resolveApp('package.json')).homepage,
+//   process.env.PUBLIC_URL
+// )
 
 const moduleFileExtensions = [
   'web.mjs',
@@ -58,7 +58,8 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   swSrc: resolveModule(resolveApp, 'src/service-worker'),
-  publicUrlOrPath
+  publicUrlOrPath,
+  appServerBundlePath: resolveApp('build/server.js')
 }
 
 
