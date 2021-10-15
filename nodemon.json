@@ -1,6 +1,7 @@
 {
   "watch": ["src"],
-  "ext": "ts,js,tsx",
+  "ext": "ts,js,tsx,css",
   "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
-  "exec": "ts-node ./src/server.tsx"
+  "exec": "node ./scripts/dev.js",
+  "quiet": true
 }

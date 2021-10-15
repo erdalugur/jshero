@@ -3,36 +3,20 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import { resolveRootModule } from 'jshero-core'
-import expres from 'express'
+import { resolveRootModule } from '../resolver'
+import express from 'express'
 import fs from 'fs'
-import webpack from 'webpack'
+import path from 'path'
 import { Helmet } from "react-helmet"
-import { createApp } from './main'
-import { CreateAppOptions } from 'types'
+import { createApp } from '../main'
+import { CreateAppOptions } from '../types'
+import compression from 'compression'
 
-const router = expres.Router()
-
-async function createAsset (): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    if (process.env.NODE_ENV === 'development'){
-      console.log(`application running development mode`)
-      const configFactory = require(resolveApp('config/webpack.config.js'))
-      const config = configFactory('development', 'browser')
-      const compiler = webpack(config);
-      compiler.outputFileSystem = fs;
-
-      compiler.run((e, stats) => {
-        if(e){
-          return reject(e)
-        } else {
-          resolve(true)
-        }
-      })
-    }
-    resolve(true)
-  })
+function resolveApp (relativePath: string) {
+  return path.join(path.resolve(process.cwd()), relativePath)
 }
+
+
 function createRenderer (url: string, store: any, modules: any[]) {
   const sheets = new SheetsRegistry()
   const markup = renderToString(
@@ -77,7 +61,9 @@ function createRenderer (url: string, store: any, modules: any[]) {
 const staticPath = resolveApp('build/browser')
 
 export async function createServer (options: CreateAppOptions) {
-  await createAsset()
+  const app = express()
+  app.use(compression())
+  const router = express.Router()
   function useMiddeware () {
     const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
 
@@ -115,5 +101,8 @@ export async function createServer (options: CreateAppOptions) {
     })
     return router
   }
-  return { useMiddeware, staticPath }
+  app.use(useMiddeware())
+  app.get('*.*', express.static(staticPath))
+
+  return app
 }

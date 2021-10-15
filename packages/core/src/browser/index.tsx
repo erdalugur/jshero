@@ -1,13 +1,13 @@
-import { resolveRootModule } from 'jshero-core'
+import { resolveRootModule } from '../resolver'
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { createApp } from './main'
-import { CreateAppOptions } from 'types'
+import { createApp } from '../main'
+import { CreateAppOptions } from '../types'
 
 export function createBrowserApp (options: CreateAppOptions) {
   const { modules, reducers, configureStore } = resolveRootModule(options.bootstrap)
-  const store = configureStore(window.__INITIAL_STATE__ || {}, reducers)
+  const store = configureStore(window['__INITIAL_STATE__'] || {}, reducers)
   hydrate(
     <BrowserRouter>
       {createApp(store as any, modules)}

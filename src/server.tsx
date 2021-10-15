@@ -1,20 +1,11 @@
-import express from 'express'
-import { createServer } from 'lib/server'
+import { createServer } from 'jshero-core/lib/server'
 import { RootModule } from 'modules'
-import compression from 'compression'
 
 async function Bootstrap () {
   
-  const app = express()
-  app.use(compression())
-  
-  const { useMiddeware, staticPath } = await createServer({
+  const app = await createServer({
     bootstrap: RootModule
   })
-  
-  app.get('*.*', express.static(staticPath))
-  
-  app.use(useMiddeware())
   
   const port = process.env.PORT || 3000
 

@@ -1,8 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals')
 const webpack = require('webpack')
+const path = require('path')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 /**
  * 
@@ -10,7 +12,8 @@ const paths = require('./paths')
  * @param {'node' | 'browser'} target 
  * @returns 
  */
-module.exports = (mode = 'development', target = 'node') => {
+function configFactory (mode = 'development', target = 'node') {
+  process.env.NODE_ENV = mode
   const isProduction = mode === 'production'
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1))
   const isServer = target === 'node'
@@ -25,13 +28,18 @@ module.exports = (mode = 'development', target = 'node') => {
           publicPath: paths.publicUrlOrPath
         })
       )
-    }    
+    }
+    items.push(
+      new MiniCssExtractPlugin({
+        filename: (isProduction ? 'static/css/[name].[contenthash:8].css' : 'static/css/main.css')
+      })
+    )
     items.push(
       new webpack.DefinePlugin({
         ...env.stringified, 
         PRODUCTION: JSON.stringify(mode),
         'typeof window': JSON.stringify('object'),
-        'process.env.NODE_ENV': JSON.stringify(mode),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.BROWSER': JSON.stringify(!isServer)
       })
     )
@@ -46,9 +54,13 @@ module.exports = (mode = 'development', target = 'node') => {
         {
           test: /\.css$/,
           use: [
-            'style-loader',
-            'css-loader',
-            'sass-loader',
+            MiniCssExtractPlugin.loader, // instead of style-loader
+            //'style-loader',
+            {
+              loader: 'css-loader',
+              options: { url: false }
+            }
+            //'sass-loader',
           ]
         },
         {
@@ -70,5 +82,35 @@ module.exports = (mode = 'development', target = 'node') => {
       publicPath: paths.publicUrlOrPath,
       filename: isServer ? 'server.js' : (isProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/bundle.js'),
     }
+  }
+}
+/**
+ * 
+ * @param {'browser' | 'node'} target 
+ * @param {'development' | 'production'} mode
+ * @returns 
+ */
+ async function builder (mode,target) {
+  return new Promise((resolve, reject) => {
+    const compiler = webpack(configFactory(mode, target))
+    compiler.run((e, stats) => {
+      if (e) {
+        console.log(e)
+        return reject(e)
+      }
+      return resolve(stats)
+    })
+  }) 
+}
+
+module.exports = {
+  /**
+ * 
+ * @param {'development' | 'production'} mode
+ * @returns 
+ */
+  compiler: async function (mode) {
+    await builder(mode,'browser')
+    await builder(mode,'node')
   }
 }
