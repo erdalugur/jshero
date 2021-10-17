@@ -1,6 +1,5 @@
-import { createBrowserApp } from 'jshero-core/lib/browser'
+import { createBrowserApp } from 'lib/browser'
 import { RootModule } from 'modules'
-
 createBrowserApp({
   bootstrap: RootModule
 })
