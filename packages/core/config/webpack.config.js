@@ -98,7 +98,7 @@ function configFactory (mode = 'development', target = 'node') {
         console.log(e)
         return reject(e)
       }
-      return resolve(stats)
+      return resolve(createStats(stats))
     })
   }) 
 }
@@ -112,5 +112,17 @@ module.exports = {
   compiler: async function (mode) {
     await builder(mode,'browser')
     await builder(mode,'node')
+  }
+}
+/**
+ * 
+ * @param {} stats 
+ * @returns {{ errors: string[], warnings: string[]}}
+ */
+ function createStats (stats) {
+  const { errors = [], warnings = [] } = stats.toJson({ all: false, warnings: true, errors: true })
+  return { 
+    errors: errors.map(x => x.message), 
+    warnings: warnings.map(x => x.message)
   }
 }
