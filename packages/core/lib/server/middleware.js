@@ -58,6 +58,6 @@ function sendError(req, res) {
     if (fs_1.default.existsSync(fileSource))
         res.sendFile(fileSource);
     else
-        res.send('404');
+        res.send("\n    <html>\n    <head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>JSHERO</title><style>\n    .container {\n      width: 100%;\n      height: 100vh;\n      display: flex;\n      align-items: center;\n      flex-direction: column;\n      justify-content: center;\n    }\n    </style>\n    </head>\n    <body>\n      <div class=\"container\">\n        <h1>404</h1>\n        <p>Page Not Found</p>\n      </div>\n    </body>\n    </html>\n    ");
 }
 exports.sendError = sendError;
