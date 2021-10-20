@@ -1,6 +1,6 @@
 import './polyfill'
 import { resolveRootModule } from '../resolver'
-import express, { Request, Response, NextFunction} from 'express'
+import express, { Request, Response, NextFunction, Application } from 'express'
 import { CreateAppOptions } from '../types'
 import compression from 'compression'
 import { resolveApp } from './utils'
@@ -11,7 +11,7 @@ const staticPath = resolveApp('build/browser')
 
 const app = express()
 
-export async function createServer (options: CreateAppOptions): Promise<typeof app> {
+export async function createServer (options: CreateAppOptions): Promise<Application> {
   app.use(compression())
   const router = express.Router()
   function useMiddeware () {
