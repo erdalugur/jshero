@@ -35,58 +35,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createServer = void 0;
 require("./polyfill");
-var react_1 = __importDefault(require("react"));
-var server_1 = require("react-dom/server");
-var react_router_dom_1 = require("react-router-dom");
-var react_jss_1 = require("react-jss");
 var resolver_1 = require("../resolver");
 var express_1 = __importDefault(require("express"));
-var fs_1 = __importDefault(require("fs"));
-var path_1 = __importDefault(require("path"));
-var react_helmet_1 = require("react-helmet");
-var main_1 = require("../main");
 var compression_1 = __importDefault(require("compression"));
-function resolveApp(relativePath) {
-    return path_1.default.join(path_1.default.resolve(process.cwd()), relativePath);
-}
-function createRenderer(url, store, modules) {
-    var sheets = new react_jss_1.SheetsRegistry();
-    var markup = (0, server_1.renderToString)(react_1.default.createElement(react_jss_1.JssProvider, { registry: sheets },
-        react_1.default.createElement(react_router_dom_1.StaticRouter, { location: url }, (0, main_1.createApp)(store, modules))));
-    return {
-        render: function () {
-            var template = fs_1.default.readFileSync(staticPath + "/index.html", { encoding: 'utf-8' });
-            var helmet = react_helmet_1.Helmet.renderStatic();
-            var regexp = / data-react-helmet="true"/g;
-            var html = helmet.htmlAttributes.toString().replace(regexp, ''), head = [
-                helmet.title.toString().replace(regexp, ''),
-                helmet.meta.toString().replace(regexp, ''),
-                helmet.link.toString().replace(regexp, '')
-            ].join(''), body = helmet.bodyAttributes.toString().replace(regexp, ''), script = helmet.script.toString().replace(regexp, '');
-            return template
-                .replace('<html', "<html " + html)
-                .replace('</head>', head + "</head>")
-                .replace('</head>', "<style type=\"text/css\" id=\"server-side-styles\">" + sheets.toString() + "</style></head>")
-                .replace('<body', "<body " + body)
-                .replace('<div id="root"></div>', "<div id=\"root\">" + markup + "</div>\n      <script>\n        window.__INITIAL_STATE__ = " + JSON.stringify(store.getState()).replace(/</g, '\\u003c') + "\n      </script>\n      ")
-                .replace('</body>', script + "</body>");
-        }
-    };
-}
-var staticPath = resolveApp('build/browser');
+var utils_1 = require("./utils");
+var middleware_1 = require("./middleware");
+var renderer_1 = require("./renderer");
+var staticPath = (0, utils_1.resolveApp)('build/browser');
+var app = (0, express_1.default)();
 function createServer(options) {
     return __awaiter(this, void 0, void 0, function () {
         function useMiddeware() {
             var _this = this;
             var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
-            modules.forEach(function (x) {
-                var _a = resolveController(x.controller), fn = _a.fn, resolvePrefix = _a.resolvePrefix, resolveRoutes = _a.resolveRoutes, withOutputCache = _a.withOutputCache;
+            modules.forEach(function (_a) {
+                var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
+                var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache;
                 if (x.view) {
                     router.get(x.path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                         var cacheKey, result, error_1;
@@ -105,7 +86,7 @@ function createServer(options) {
                                                     case 1:
                                                         result = _b.sent();
                                                         store = configureStore((_a = {}, _a[x.name] = result, _a), reducers);
-                                                        render = createRenderer(req.url, store, modules).render;
+                                                        render = (0, renderer_1.createRenderer)({ modules: modules, store: store, url: req.url }).render;
                                                         return [2 /*return*/, render()];
                                                 }
                                             });
@@ -137,7 +118,7 @@ function createServer(options) {
                                     return [4 /*yield*/, fn(req, res, next, methodName)];
                                 case 1:
                                     result = _a.sent();
-                                    res.json(result);
+                                    res.status(statusCode).json(result);
                                     return [3 /*break*/, 3];
                                 case 2:
                                     error_2 = _a.sent();
@@ -151,13 +132,14 @@ function createServer(options) {
             });
             return router;
         }
-        var app, router;
+        var router;
         return __generator(this, function (_a) {
-            app = (0, express_1.default)();
             app.use((0, compression_1.default)());
             router = express_1.default.Router();
             app.use(useMiddeware());
             app.get('*.*', express_1.default.static(staticPath));
+            app.use(middleware_1.errorLogger);
+            app.use(middleware_1.sendError);
             return [2 /*return*/, app];
         });
     });

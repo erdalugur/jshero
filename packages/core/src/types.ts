@@ -44,6 +44,7 @@ export interface AppModule {
   name: string,
   reducer: Function
   outputCache?: number
+  statusCode?: HttpStatusCode
 }
 
 export interface BaseModule {

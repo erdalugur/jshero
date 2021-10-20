@@ -1,3 +1,5 @@
 import './polyfill';
 import { CreateAppOptions } from '../types';
-export declare function createServer(options: CreateAppOptions): Promise<import("express-serve-static-core").Express>;
+declare const app: import("express-serve-static-core").Express;
+export declare function createServer(options: CreateAppOptions): Promise<typeof app>;
+export {};
