@@ -1,5 +1,4 @@
-import './polyfill';
-import { AppModule } from 'src';
+import { AppModule } from '../types';
 interface Renderer {
     url: string;
     store: any;

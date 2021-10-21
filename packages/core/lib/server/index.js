@@ -59,89 +59,84 @@ var utils_1 = require("./utils");
 var middleware_1 = require("./middleware");
 var renderer_1 = require("./renderer");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
-var app = (0, express_1.default)();
 function createServer(options) {
-    return __awaiter(this, void 0, void 0, function () {
-        function useMiddeware() {
-            var _this = this;
-            var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
-            modules.forEach(function (_a) {
-                var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
-                var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache;
-                if (x.view) {
-                    router.get(x.path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
-                        var cacheKey, result, error_1;
-                        var _this = this;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    _a.trys.push([0, 2, , 3]);
-                                    cacheKey = "__" + x.path + "__" + x.name + "__";
-                                    return [4 /*yield*/, withOutputCache(cacheKey, x.outputCache || 0, function () { return __awaiter(_this, void 0, void 0, function () {
-                                            var result, store, render;
-                                            var _a;
-                                            return __generator(this, function (_b) {
-                                                switch (_b.label) {
-                                                    case 0: return [4 /*yield*/, fn(req, res, next)];
-                                                    case 1:
-                                                        result = _b.sent();
-                                                        store = configureStore((_a = {}, _a[x.name] = result, _a), reducers);
-                                                        render = (0, renderer_1.createRenderer)({ modules: modules, store: store, url: req.url }).render;
-                                                        return [2 /*return*/, render()];
-                                                }
-                                            });
-                                        }); })];
-                                case 1:
-                                    result = _a.sent();
-                                    res.send(result);
-                                    return [3 /*break*/, 3];
-                                case 2:
-                                    error_1 = _a.sent();
-                                    next(error_1);
-                                    return [3 /*break*/, 3];
-                                case 3: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                }
-                // api routes
-                var prefix = resolvePrefix();
-                var routes = resolveRoutes();
-                routes.forEach(function (_a) {
-                    var methodName = _a.methodName, requestMethod = _a.requestMethod, path = _a.path;
-                    router[requestMethod](prefix + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
-                        var result, error_2;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    _a.trys.push([0, 2, , 3]);
-                                    return [4 /*yield*/, fn(req, res, next, methodName)];
-                                case 1:
-                                    result = _a.sent();
-                                    res.status(statusCode).json(result);
-                                    return [3 /*break*/, 3];
-                                case 2:
-                                    error_2 = _a.sent();
-                                    next(error_2);
-                                    return [3 /*break*/, 3];
-                                case 3: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                });
+    var app = (0, express_1.default)();
+    app.use((0, compression_1.default)());
+    var router = express_1.default.Router();
+    function useMiddeware() {
+        var _this = this;
+        var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
+        modules.forEach(function (_a) {
+            var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
+            var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache;
+            if (x.view) {
+                router.get(x.path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                    var cacheKey, result, error_1;
+                    var _this = this;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                _a.trys.push([0, 2, , 3]);
+                                cacheKey = "__" + x.path + "__" + x.name + "__";
+                                return [4 /*yield*/, withOutputCache(cacheKey, x.outputCache || 0, function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var result, store, render;
+                                        var _a;
+                                        return __generator(this, function (_b) {
+                                            switch (_b.label) {
+                                                case 0: return [4 /*yield*/, fn(req, res, next)];
+                                                case 1:
+                                                    result = _b.sent();
+                                                    store = configureStore((_a = {}, _a[x.name] = result, _a), reducers);
+                                                    render = (0, renderer_1.createRenderer)({ modules: modules, store: store, url: req.url }).render;
+                                                    return [2 /*return*/, render()];
+                                            }
+                                        });
+                                    }); })];
+                            case 1:
+                                result = _a.sent();
+                                res.send(result);
+                                return [3 /*break*/, 3];
+                            case 2:
+                                error_1 = _a.sent();
+                                next(error_1);
+                                return [3 /*break*/, 3];
+                            case 3: return [2 /*return*/];
+                        }
+                    });
+                }); });
+            }
+            // api routes
+            var prefix = resolvePrefix();
+            var routes = resolveRoutes();
+            routes.forEach(function (_a) {
+                var methodName = _a.methodName, requestMethod = _a.requestMethod, path = _a.path;
+                router[requestMethod](prefix + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                    var result, error_2;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                _a.trys.push([0, 2, , 3]);
+                                return [4 /*yield*/, fn(req, res, next, methodName)];
+                            case 1:
+                                result = _a.sent();
+                                res.status(statusCode).json(result);
+                                return [3 /*break*/, 3];
+                            case 2:
+                                error_2 = _a.sent();
+                                next(error_2);
+                                return [3 /*break*/, 3];
+                            case 3: return [2 /*return*/];
+                        }
+                    });
+                }); });
             });
-            return router;
-        }
-        var router;
-        return __generator(this, function (_a) {
-            app.use((0, compression_1.default)());
-            router = express_1.default.Router();
-            app.use(useMiddeware());
-            app.get('*.*', express_1.default.static(staticPath));
-            app.use(middleware_1.errorLogger);
-            app.use(middleware_1.sendError);
-            return [2 /*return*/, app];
         });
-    });
+        return router;
+    }
+    app.use(useMiddeware());
+    app.get('*.*', express_1.default.static(staticPath));
+    app.use(middleware_1.errorLogger);
+    app.use(middleware_1.sendError);
+    return app;
 }
 exports.createServer = createServer;

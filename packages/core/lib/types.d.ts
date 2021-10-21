@@ -1,3 +1,4 @@
+import { Express } from 'express';
 export declare enum HttpMethods {
     GET = "get",
     POST = "post",
@@ -47,4 +48,6 @@ export interface BaseModule {
 }
 export interface CreateAppOptions {
     bootstrap: object;
+}
+export interface JsHeroServer extends Express {
 }

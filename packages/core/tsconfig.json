@@ -1,8 +1,15 @@
 {
+  "ts-node": {
+    "transpileOnly": true,
+    "require": [  // set this so you dont need to use ts-node -r 
+      "typescript-transform-paths/register",
+      "tsconfig-paths/register"
+     ]
+  },
   "compilerOptions": {
     "jsx": "react",
     "module": "commonjs",
-    "baseUrl": "./",
+    "baseUrl": "./src",       
     "outDir": "./lib",
     "target": "ES5",
     "experimentalDecorators": true,
@@ -10,7 +17,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "lib": [ "es6", "dom" ],
-    "skipLibCheck": false
+    "skipLibCheck": false,
+    "emitDecoratorMetadata": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "lib"]

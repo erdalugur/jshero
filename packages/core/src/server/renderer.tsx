@@ -1,4 +1,3 @@
-import './polyfill'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
@@ -7,7 +6,7 @@ import fs from 'fs'
 import { Helmet } from "react-helmet"
 import { createApp } from '../main'
 import { resolveApp } from './utils'
-import { AppModule } from 'src'
+import { AppModule } from '../types'
 
 const staticPath = resolveApp('build/browser')
 interface Renderer {

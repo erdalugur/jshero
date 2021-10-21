@@ -1,10 +1,11 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals')
 const webpack = require('webpack')
-const path = require('path')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 /**
  * 
@@ -45,7 +46,7 @@ function configFactory (mode = 'development', target = 'node') {
     )
     return items
   }
-  return {
+  const config = {
     mode: mode,
     target: isServer ? 'node' : 'web',
     entry: isServer ? paths.appServerJs: paths.appIndexJs,
@@ -75,54 +76,29 @@ function configFactory (mode = 'development', target = 'node') {
       modules: ["node_modules", paths.appNodeModules, paths.appSrc]
     },
     plugins: webpackPlugings(),
-    devtool: !isProduction ? 'source-map': undefined,
+    devtool: !isProduction ? 'source-map': false,
     externals: isServer && [nodeExternals()] || [],
     output: {
       path: isServer ? paths.appServerBuild : paths.appBuild,
       publicPath: paths.publicUrlOrPath,
       filename: isServer ? 'server.js' : (isProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/bundle.js'),
+    },
+    performance: {
+      hints: false
+    },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new CssMinimizerPlugin(),
+      ],
     }
   }
-}
-/**
- * 
- * @param {'browser' | 'node'} target 
- * @param {'development' | 'production'} mode
- * @returns 
- */
- async function builder (mode,target) {
-  return new Promise((resolve, reject) => {
-    const compiler = webpack(configFactory(mode, target))
-    compiler.run((e, stats) => {
-      if (e) {
-        console.log(e)
-        return reject(e)
-      }
-      return resolve(createStats(stats))
-    })
-  }) 
+  if (isProduction && !isServer) {
+    config.optimization.minimizer.push(
+      new TerserPlugin()
+    )
+  }
+  return config
 }
 
-module.exports = {
-  /**
- * 
- * @param {'development' | 'production'} mode
- * @returns 
- */
-  compiler: async function (mode) {
-    await builder(mode,'browser')
-    await builder(mode,'node')
-  }
-}
-/**
- * 
- * @param {} stats 
- * @returns {{ errors: string[], warnings: string[]}}
- */
- function createStats (stats) {
-  const { errors = [], warnings = [] } = stats.toJson({ all: false, warnings: true, errors: true })
-  return { 
-    errors: errors.map(x => x.message), 
-    warnings: warnings.map(x => x.message)
-  }
-}
+module.exports.configFactory = configFactory
