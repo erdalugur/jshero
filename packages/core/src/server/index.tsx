@@ -49,13 +49,21 @@ export function createServer (options: CreateAppOptions) {
         })
       })
     })
-    return router
+    app.use(router)
   }
-  app.use(useMiddeware())
-  app.get('*.*', express.static(staticPath))
   
-  app.use(errorLogger)
-  app.use(sendError)
+  function useStaticMiddleware () {
+    app.get('*.*', express.static(staticPath))
+  }
 
-  return app
+  function useExceptionMiddleware () {
+    app.use(errorLogger)
+    app.use(sendError)
+  }
+  return {
+    app,
+    useAppMiddeware: useMiddeware,
+    useStaticMiddleware,
+    useExceptionMiddleware
+  }
 }

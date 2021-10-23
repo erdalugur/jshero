@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Express, NextFunction, Response } from 'express'
 
 export enum HttpMethods {
   GET = 'get',

@@ -132,12 +132,20 @@ function createServer(options) {
                 }); });
             });
         });
-        return router;
+        app.use(router);
     }
-    app.use(useMiddeware());
-    app.get('*.*', express_1.default.static(staticPath));
-    app.use(middleware_1.errorLogger);
-    app.use(middleware_1.sendError);
-    return app;
+    function useStaticMiddleware() {
+        app.get('*.*', express_1.default.static(staticPath));
+    }
+    function useExceptionMiddleware() {
+        app.use(middleware_1.errorLogger);
+        app.use(middleware_1.sendError);
+    }
+    return {
+        app: app,
+        useAppMiddeware: useMiddeware,
+        useStaticMiddleware: useStaticMiddleware,
+        useExceptionMiddleware: useExceptionMiddleware
+    };
 }
 exports.createServer = createServer;
