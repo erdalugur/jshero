@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Meta } from 'jshero-core'
 import { useAppSelector } from 'lib'
 import { useStyles } from './style'
 
@@ -8,9 +8,9 @@ export function View () {
   const { meta } = useAppSelector(x => x.home)
   return(
     <div className={classes.container}>
-      <Helmet>
+      <Meta>
         <title>{meta.title}</title>
-      </Helmet>
+      </Meta>
       <h1>{meta.title}</h1>
       <p>Hoş Geldiniz!</p>
     </div>
