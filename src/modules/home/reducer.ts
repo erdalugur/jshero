@@ -1,6 +1,7 @@
 import { PageState } from "types"
+import { HomeState } from "./model"
 
-const initialState: PageState = {
+const initialState: PageState<HomeState> = {
   meta: {
     title: ''
   },

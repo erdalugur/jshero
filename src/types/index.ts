@@ -1,13 +1,12 @@
-export interface PageState {
+import { HomeState } from "modules/home/model";
+
+export interface PageState <T> {
   meta: {
     title: string
   },
-  props: any
+  props: T
 }
 
 export interface AppState {
-  home: PageState
-}
-export interface CreateAppOptions {
-  bootstrap: object
+  home: PageState<HomeState>
 }

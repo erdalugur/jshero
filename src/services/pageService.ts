@@ -4,7 +4,7 @@ export class PageService {
       meta: {
         title: 'JSHERO'
       },
-      props: {}
+      props: { }
     }
   }
 

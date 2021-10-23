@@ -2,7 +2,7 @@ const { makeNames } = require("../utils")
 module.exports = {
   model (name){
     const { pascalCaseName } = makeNames(name)
-    return `export interface ${pascalCaseName}Props { }`
+    return `export interface ${pascalCaseName}State { }`
   },
   view (name) {
     const { pascalCaseName } = makeNames(name)
@@ -22,12 +22,13 @@ export function View () {
     const { pascalCaseName } = makeNames(name)
     return `import { ViewHandler, Get, Controller } from "jshero-core"
 import { PageState } from "../../types"
+import { ${pascalCaseName}State } from "./model";
 
 @Controller()
 export class ${pascalCaseName}Controller {
   @ViewHandler()
   @Get()
-  handler (): PageState {
+  handler (): PageState<${pascalCaseName}State>  {
     return {
       meta: {
         title: ''
@@ -70,8 +71,9 @@ export const useStyles = createUseStyles({
   },
   reducer(name) {
     return `import { PageState } from "../../types"
+    import { ${pascalCaseName}State } from './model'
 
-const initialState: PageState = {
+const initialState: PageState<${pascalCaseName}State> = {
   meta: {
     title: ''
   },
