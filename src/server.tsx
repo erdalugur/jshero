@@ -1,6 +1,4 @@
-import { createServer } from '../packages/core/lib/server'
-import {  } from 'jshero-core'
-
+import { createServer } from 'jshero-core/lib/server'
 import { RootModule } from 'modules'
 
 async function Bootstrap () {
