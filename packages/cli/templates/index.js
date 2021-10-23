@@ -70,6 +70,7 @@ export const useStyles = createUseStyles({
 })`
   },
   reducer(name) {
+    const { pascalCaseName } = makeNames(name)
     return `import { PageState } from "../../types"
     import { ${pascalCaseName}State } from './model'
 
