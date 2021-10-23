@@ -38,7 +38,8 @@ export function createServer (options: CreateAppOptions) {
       const prefix = resolvePrefix()
       const routes = resolveRoutes()
       routes.forEach(({ methodName, requestMethod, path}) => {
-        router[requestMethod](prefix + path, async (req: Request, res: Response, next: NextFunction) => {
+        const route = (prefix + x.path + path).replace('//', '/')
+        router[requestMethod](route, async (req: Request, res: Response, next: NextFunction) => {
           try {
             const result = await fn(req, res, next, methodName)
             res.status(statusCode).json(result)

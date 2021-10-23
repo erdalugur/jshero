@@ -110,7 +110,8 @@ function createServer(options) {
             var routes = resolveRoutes();
             routes.forEach(function (_a) {
                 var methodName = _a.methodName, requestMethod = _a.requestMethod, path = _a.path;
-                router[requestMethod](prefix + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                var route = (prefix + x.path + path).replace('//', '/');
+                router[requestMethod](route, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var result, error_2;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
