@@ -1,6 +1,6 @@
 {
   "name": "jshero-cli",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "index.js",
   "description": "jshero command line interface",
   "source": "index.js",
