@@ -13,7 +13,7 @@ export function createServer (options: CreateAppOptions) {
   const app = express()
   app.use(compression())
   const router = express.Router()
-  function useMiddeware () {
+  function useMiddleware () {
     const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
 
     modules.forEach(({statusCode = 200 ,...x}) => {
@@ -62,7 +62,7 @@ export function createServer (options: CreateAppOptions) {
   }
   return {
     app,
-    useAppMiddeware: useMiddeware,
+    useAppMiddleware: useMiddleware,
     useStaticMiddleware,
     useExceptionMiddleware
   }

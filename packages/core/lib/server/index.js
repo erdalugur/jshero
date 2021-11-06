@@ -63,7 +63,7 @@ function createServer(options) {
     var app = (0, express_1.default)();
     app.use((0, compression_1.default)());
     var router = express_1.default.Router();
-    function useMiddeware() {
+    function useMiddleware() {
         var _this = this;
         var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
         modules.forEach(function (_a) {
@@ -143,7 +143,7 @@ function createServer(options) {
     }
     return {
         app: app,
-        useAppMiddeware: useMiddeware,
+        useAppMiddleware: useMiddleware,
         useStaticMiddleware: useStaticMiddleware,
         useExceptionMiddleware: useExceptionMiddleware
     };

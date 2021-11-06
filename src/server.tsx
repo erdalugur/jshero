@@ -4,12 +4,12 @@ import { RootModule } from 'modules'
 async function Bootstrap () {
   const { 
     app, 
-    useAppMiddeware, 
+    useAppMiddleware, 
     useExceptionMiddleware, 
     useStaticMiddleware 
   } = createServer({ bootstrap: RootModule })
   
-  useAppMiddeware()
+  useAppMiddleware()
 
   useStaticMiddleware()
   
