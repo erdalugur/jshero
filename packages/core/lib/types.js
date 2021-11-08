@@ -11,6 +11,8 @@ var HttpMethods;
 })(HttpMethods = exports.HttpMethods || (exports.HttpMethods = {}));
 var HttpStatusCode;
 (function (HttpStatusCode) {
+    HttpStatusCode[HttpStatusCode["RedirectMovedPermanent"] = 301] = "RedirectMovedPermanent";
+    HttpStatusCode[HttpStatusCode["RedirectTemporary"] = 302] = "RedirectTemporary";
     HttpStatusCode[HttpStatusCode["BadRequest"] = 400] = "BadRequest";
     HttpStatusCode[HttpStatusCode["UnAuthorized"] = 401] = "UnAuthorized";
     HttpStatusCode[HttpStatusCode["Forbidden"] = 403] = "Forbidden";

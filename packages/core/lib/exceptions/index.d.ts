@@ -13,6 +13,7 @@ export declare class HttpException extends Error {
  * throw new NotFoundException()
  */
 export declare class NotFoundException extends HttpException {
+    notFound: boolean;
     constructor(message?: string);
 }
 /**
@@ -42,4 +43,10 @@ export declare class UnAuthorizedException extends HttpException {
  */
 export declare class InternalServerErrorException extends HttpException {
     constructor(message?: string);
+}
+export declare class Redirect extends HttpException {
+    destination: string;
+    statusCode: number;
+    redirectionResult: boolean;
+    constructor(destination: string, permanent?: boolean);
 }

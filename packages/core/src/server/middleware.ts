@@ -1,41 +1,71 @@
-import { Request, Response, NextFunction} from 'express'
 import fs from 'fs'
-import { HttpException } from '../exceptions'
+import { NotFoundException, Redirect, UnAuthorizedException, ForbiddenException, BadRequestException } from '../exceptions'
 import { resolveApp } from './utils'
+import { HttpNextFunction, HttpRequest, HttpResponse, HttpStatusCode } from '../types'
 
-export async function errorLogger (err: HttpException, req: Request, res: Response, next: NextFunction) {
-  console.log(err.message)
-  next(err)
+export async function errorLogger (err: any, req: HttpRequest, res: HttpResponse, next: HttpNextFunction) {
+  console.log("errorLogger", err.message)
+  req.error = err
+  next()
 }
-export function sendError (req: Request, res: Response) {
-  const fileSource = resolveApp('build/browser/404.html')
-  res.status(404)
-  if (fs.existsSync(fileSource))
-    res.sendFile(fileSource)
-  else 
-    res.send(`
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSHERO</title><style>
-    .container {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-    }
-    </style>
-    </head>
-    <body>
-      <div class="container">
-        <h1>404</h1>
-        <p>Page Not Found</p>
-      </div>
-    </body>
-    </html>
-    `)
+export function sendError (req: HttpRequest, res: HttpResponse) {
+  const statusCode =  req.error && req.error.status || 404
+  const message = req.error && req.error.message || 'Not Found'
+  const appName = process.env['JSHERO_APPNAME'] || 'JSHERO'
+  if (statusCode === HttpStatusCode.RedirectMovedPermanent || statusCode === HttpStatusCode.RedirectTemporary) {
+    console.log(req.url)
+    res.writeHead(statusCode, { location: req.error.destination }).end()
+  } else {
+    const fileSource = resolveApp(`build/browser/${statusCode}.html`)
+    res.status(statusCode)
+    if (fs.existsSync(fileSource))
+      res.sendFile(fileSource)
+    else 
+      res.send(`
+      <html>
+      <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${appName}</title><style>
+      .container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+      }
+      </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>${statusCode}</h1>
+          <p>${message}</p>
+        </div>
+      </body>
+      </html>
+      `)
+  }
+}
+
+export function requestContextMiddleware(req: HttpRequest, res: HttpResponse, next: HttpNextFunction) {
+  req.redirect = (destination: string, permanent:boolean = false) => {
+    req.url = destination
+    throw new Redirect(destination, permanent)
+  }
+  req.notFound = (message) => {
+    throw new NotFoundException(message)
+  }
+  req.unAuthorized = (message) => {
+    throw new UnAuthorizedException(message)
+  }
+  req.forbidden = (message) => {
+    throw new ForbiddenException(message)
+  }
+  req.badRequest = (message) => {
+    res.setHeader('Errors', message)
+    throw new BadRequestException(message)
+  }
+  next()
 }

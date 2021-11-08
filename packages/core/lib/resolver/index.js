@@ -71,7 +71,8 @@ function resolveController(target) {
                     case 0: return [4 /*yield*/, fn()];
                     case 1:
                         result = _a.sent();
-                        cache_1.cacheManager.set(methodName, result, target);
+                        if (cache)
+                            cache_1.cacheManager.set(methodName, result, target);
                         return [2 /*return*/, result];
                 }
             });

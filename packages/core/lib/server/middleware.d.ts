@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import { HttpException } from '../exceptions';
-export declare function errorLogger(err: HttpException, req: Request, res: Response, next: NextFunction): Promise<void>;
-export declare function sendError(req: Request, res: Response): void;
+import { HttpNextFunction, HttpRequest, HttpResponse } from '../types';
+export declare function errorLogger(err: any, req: HttpRequest, res: HttpResponse, next: HttpNextFunction): Promise<void>;
+export declare function sendError(req: HttpRequest, res: HttpResponse): void;
+export declare function requestContextMiddleware(req: HttpRequest, res: HttpResponse, next: HttpNextFunction): void;

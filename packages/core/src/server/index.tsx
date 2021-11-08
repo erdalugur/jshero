@@ -1,25 +1,31 @@
 import './polyfill'
 import { resolveRootModule } from '../resolver'
 import express, { Request, Response, NextFunction } from 'express'
-import { CreateAppOptions } from '../types'
+import { CreateAppOptions, HttpNextFunction, HttpRequest, HttpResponse } from '../types'
 import compression from 'compression'
 import { resolveApp } from './utils'
-import { errorLogger, sendError } from './middleware'
+import { errorLogger, sendError, requestContextMiddleware } from './middleware'
 import { createRenderer } from './renderer'
+import { Redirect } from '../exceptions'
 
 const staticPath = resolveApp('build/browser')
 
 export function createServer (options: CreateAppOptions) {
   const app = express()
+  
   app.use(compression())
+  
+  app.use(requestContextMiddleware)
+
   const router = express.Router()
+  
   function useMiddleware () {
     const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
 
     modules.forEach(({statusCode = 200 ,...x}) => {
       const { fn, resolvePrefix, resolveRoutes, withOutputCache } = resolveController(x.controller)
       if (x.view) {
-        router.get(x.path, async (req: Request, res: Response, next: NextFunction) => {
+        router.get(x.path, async (req: any, res: any, next: any) => {
           try {
             const cacheKey = `__${x.path}__${x.name}__`
             const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {

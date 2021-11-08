@@ -57,25 +57,25 @@ function createParameterDecorator(metaKey) {
 }
 /**
  * @example
- * testMethod(@Body() test: test)
+ * testMethod(@Body() test: T)
  */
 var Body = function () { return createParameterDecorator(jshero_constants_1.default.BODY); };
 exports.Body = Body;
 /**
  * @example
- * testMethod(@Req() req: express.Request)
+ * testMethod(@Req() req: HttpRequest)
  */
 var Req = function () { return createParameterDecorator(jshero_constants_1.default.REQUEST); };
 exports.Req = Req;
 /**
  * @example
- * testMethod(@Res() res: express.Response)
+ * testMethod(@Res() res: HttpResponse)
  */
 var Res = function () { return createParameterDecorator(jshero_constants_1.default.RESPONSE); };
 exports.Res = Res;
 /**
  * @example
- * testMethod(@Next() next: express.NextFunction)
+ * testMethod(@Next() next: HttpNextFunction)
  */
 var Next = function () { return createParameterDecorator(jshero_constants_1.default.NEXT); };
 exports.Next = Next;

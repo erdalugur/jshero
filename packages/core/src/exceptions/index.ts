@@ -23,6 +23,7 @@ export class HttpException extends Error {
  * throw new NotFoundException()
  */
 export class NotFoundException extends HttpException {
+  notFound: boolean = true
   constructor(message: string = NOT_FOUND) {
     super(message, HttpStatusCode.NotFound)
   }
@@ -63,4 +64,13 @@ export class InternalServerErrorException extends HttpException {
     super(message, HttpStatusCode.InternalServer)
   }
 }
-
+export class Redirect extends HttpException{
+  destination: string
+  statusCode: number = HttpStatusCode.RedirectTemporary
+  redirectionResult: boolean = true
+  constructor(destination: string, permanent: boolean = false) {
+    super('redirect', permanent ? HttpStatusCode.RedirectMovedPermanent : HttpStatusCode.RedirectTemporary)
+    this.destination = destination
+    this.statusCode = permanent ? HttpStatusCode.RedirectMovedPermanent : HttpStatusCode.RedirectTemporary
+  }
+}

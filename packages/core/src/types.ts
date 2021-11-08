@@ -1,4 +1,4 @@
-import { Express, NextFunction, Response } from 'express'
+import { Express, NextFunction, Response, Request } from 'express'
 
 export enum HttpMethods {
   GET = 'get',
@@ -9,6 +9,8 @@ export enum HttpMethods {
 }
 
 export enum HttpStatusCode {
+  RedirectMovedPermanent = 301,
+  RedirectTemporary = 302,
   BadRequest = 400,
   UnAuthorized = 401,
   Forbidden = 403,
@@ -58,3 +60,13 @@ export interface CreateAppOptions {
 }
 
 export interface JsHeroServer extends Express {}
+export interface HttpRequest extends Request {
+  redirect(destination: string, permanent?: boolean): void
+  notFound(message?: string): void
+  forbidden(message?: string): void
+  unAuthorized(message?: string): void
+  badRequest(message?: string): void
+  error: any
+}
+export interface HttpResponse extends Response { }
+export interface HttpNextFunction extends NextFunction { }

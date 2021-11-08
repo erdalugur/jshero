@@ -15,8 +15,10 @@ function resolveController (target: Object) {
       return async () => cache
 
     return async () => {
-      const result = await fn()
-      cacheManager.set(methodName, result, target)
+      const result = await fn() 
+      if (cache)
+        cacheManager.set(methodName, result, target)
+        
       return result
     }
   }

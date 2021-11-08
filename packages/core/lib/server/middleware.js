@@ -39,25 +39,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendError = exports.errorLogger = void 0;
+exports.requestContextMiddleware = exports.sendError = exports.errorLogger = void 0;
 var fs_1 = __importDefault(require("fs"));
+var exceptions_1 = require("../exceptions");
 var utils_1 = require("./utils");
+var types_1 = require("../types");
 function errorLogger(err, req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log(err.message);
-            next(err);
+            console.log("errorLogger", err.message);
+            req.error = err;
+            next();
             return [2 /*return*/];
         });
     });
 }
 exports.errorLogger = errorLogger;
 function sendError(req, res) {
-    var fileSource = (0, utils_1.resolveApp)('build/browser/404.html');
-    res.status(404);
-    if (fs_1.default.existsSync(fileSource))
-        res.sendFile(fileSource);
-    else
-        res.send("\n    <html>\n    <head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>JSHERO</title><style>\n    .container {\n      width: 100%;\n      height: 100vh;\n      display: flex;\n      align-items: center;\n      flex-direction: column;\n      justify-content: center;\n    }\n    </style>\n    </head>\n    <body>\n      <div class=\"container\">\n        <h1>404</h1>\n        <p>Page Not Found</p>\n      </div>\n    </body>\n    </html>\n    ");
+    var statusCode = req.error && req.error.status || 404;
+    var message = req.error && req.error.message || 'Not Found';
+    var appName = process.env['JSHERO_APPNAME'] || 'JSHERO';
+    if (statusCode === types_1.HttpStatusCode.RedirectMovedPermanent || statusCode === types_1.HttpStatusCode.RedirectTemporary) {
+        console.log(req.url);
+        res.writeHead(statusCode, { location: req.error.destination }).end();
+    }
+    else {
+        var fileSource = (0, utils_1.resolveApp)("build/browser/" + statusCode + ".html");
+        res.status(statusCode);
+        if (fs_1.default.existsSync(fileSource))
+            res.sendFile(fileSource);
+        else
+            res.send("\n      <html>\n      <head>\n      <meta charset=\"UTF-8\">\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n      <title>" + appName + "</title><style>\n      .container {\n        width: 100%;\n        height: 100vh;\n        display: flex;\n        align-items: center;\n        flex-direction: column;\n        justify-content: center;\n      }\n      </style>\n      </head>\n      <body>\n        <div class=\"container\">\n          <h1>" + statusCode + "</h1>\n          <p>" + message + "</p>\n        </div>\n      </body>\n      </html>\n      ");
+    }
 }
 exports.sendError = sendError;
+function requestContextMiddleware(req, res, next) {
+    req.redirect = function (destination, permanent) {
+        if (permanent === void 0) { permanent = false; }
+        req.url = destination;
+        throw new exceptions_1.Redirect(destination, permanent);
+    };
+    req.notFound = function (message) {
+        throw new exceptions_1.NotFoundException(message);
+    };
+    req.unAuthorized = function (message) {
+        throw new exceptions_1.UnAuthorizedException(message);
+    };
+    req.forbidden = function (message) {
+        throw new exceptions_1.ForbiddenException(message);
+    };
+    req.badRequest = function (message) {
+        res.setHeader('Errors', message);
+        throw new exceptions_1.BadRequestException(message);
+    };
+    next();
+}
+exports.requestContextMiddleware = requestContextMiddleware;

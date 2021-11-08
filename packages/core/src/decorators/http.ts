@@ -46,22 +46,22 @@ function createParameterDecorator (metaKey: string | Symbol): ParameterDecorator
 
 /**
  * @example
- * testMethod(@Body() test: test)
+ * testMethod(@Body() test: T)
  */
 export const Body = (): ParameterDecorator => createParameterDecorator(META_KEYS.BODY)
 /**
  * @example
- * testMethod(@Req() req: express.Request)
+ * testMethod(@Req() req: HttpRequest)
  */
 export const Req = (): ParameterDecorator => createParameterDecorator(META_KEYS.REQUEST)
 /**
  * @example
- * testMethod(@Res() res: express.Response)
+ * testMethod(@Res() res: HttpResponse)
  */
 export const Res = (): ParameterDecorator => createParameterDecorator(META_KEYS.RESPONSE)
 /**
  * @example
- * testMethod(@Next() next: express.NextFunction)
+ * testMethod(@Next() next: HttpNextFunction)
  */
 export const Next = (): ParameterDecorator => createParameterDecorator(META_KEYS.NEXT) 
 

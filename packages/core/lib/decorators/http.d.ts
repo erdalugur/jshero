@@ -6,22 +6,22 @@ export declare function Delete(path?: string): MethodDecorator;
 export declare function Options(path?: string): MethodDecorator;
 /**
  * @example
- * testMethod(@Body() test: test)
+ * testMethod(@Body() test: T)
  */
 export declare const Body: () => ParameterDecorator;
 /**
  * @example
- * testMethod(@Req() req: express.Request)
+ * testMethod(@Req() req: HttpRequest)
  */
 export declare const Req: () => ParameterDecorator;
 /**
  * @example
- * testMethod(@Res() res: express.Response)
+ * testMethod(@Res() res: HttpResponse)
  */
 export declare const Res: () => ParameterDecorator;
 /**
  * @example
- * testMethod(@Next() next: express.NextFunction)
+ * testMethod(@Next() next: HttpNextFunction)
  */
 export declare const Next: () => ParameterDecorator;
 /**

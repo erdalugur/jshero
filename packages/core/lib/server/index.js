@@ -62,6 +62,7 @@ var staticPath = (0, utils_1.resolveApp)('build/browser');
 function createServer(options) {
     var app = (0, express_1.default)();
     app.use((0, compression_1.default)());
+    app.use(middleware_1.requestContextMiddleware);
     var router = express_1.default.Router();
     function useMiddleware() {
         var _this = this;
