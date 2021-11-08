@@ -22,16 +22,33 @@ var NOT_FOUND = 'Not Found', BAD_REQUEST = 'BadRequest', FORBIDDEN = 'Forbidden'
  * @example
  * throw new HttpException("your error message", your_status_number)
  */
-var HttpException = /** @class */ (function (_super) {
-    __extends(HttpException, _super);
+var HttpException = /** @class */ (function () {
     function HttpException(message, status) {
-        var _this = _super.call(this, message) || this;
-        _this.status = status;
-        _this.trustedException = true;
-        return _this;
+        this.status = status;
+        this.trustedException = true;
+        this.message = this.defaultMessage(status, message);
     }
+    HttpException.prototype.defaultMessage = function (statusCode, message) {
+        if (typeof (message) === 'undefined') {
+            switch (statusCode) {
+                case types_1.HttpStatusCode.BadRequest:
+                    return BAD_REQUEST;
+                case types_1.HttpStatusCode.InternalServer:
+                    return INTERNAL_SERVER_ERROR;
+                case types_1.HttpStatusCode.UnAuthorized:
+                    return UN_AUTHORIZED;
+                case types_1.HttpStatusCode.NotFound:
+                    return NOT_FOUND;
+                case types_1.HttpStatusCode.Forbidden:
+                    return FORBIDDEN;
+            }
+        }
+        else {
+            return message;
+        }
+    };
     return HttpException;
-}(Error));
+}());
 exports.HttpException = HttpException;
 /**
  * @example
@@ -40,10 +57,7 @@ exports.HttpException = HttpException;
 var NotFoundException = /** @class */ (function (_super) {
     __extends(NotFoundException, _super);
     function NotFoundException(message) {
-        if (message === void 0) { message = NOT_FOUND; }
-        var _this = _super.call(this, message, types_1.HttpStatusCode.NotFound) || this;
-        _this.notFound = true;
-        return _this;
+        return _super.call(this, message, types_1.HttpStatusCode.NotFound) || this;
     }
     return NotFoundException;
 }(HttpException));
@@ -55,7 +69,6 @@ exports.NotFoundException = NotFoundException;
 var BadRequestException = /** @class */ (function (_super) {
     __extends(BadRequestException, _super);
     function BadRequestException(message) {
-        if (message === void 0) { message = BAD_REQUEST; }
         return _super.call(this, message, types_1.HttpStatusCode.BadRequest) || this;
     }
     return BadRequestException;
@@ -68,7 +81,6 @@ exports.BadRequestException = BadRequestException;
 var ForbiddenException = /** @class */ (function (_super) {
     __extends(ForbiddenException, _super);
     function ForbiddenException(message) {
-        if (message === void 0) { message = FORBIDDEN; }
         return _super.call(this, message, types_1.HttpStatusCode.Forbidden) || this;
     }
     return ForbiddenException;
@@ -81,7 +93,6 @@ exports.ForbiddenException = ForbiddenException;
 var UnAuthorizedException = /** @class */ (function (_super) {
     __extends(UnAuthorizedException, _super);
     function UnAuthorizedException(message) {
-        if (message === void 0) { message = UN_AUTHORIZED; }
         return _super.call(this, message, types_1.HttpStatusCode.UnAuthorized) || this;
     }
     return UnAuthorizedException;
@@ -94,7 +105,6 @@ exports.UnAuthorizedException = UnAuthorizedException;
 var InternalServerErrorException = /** @class */ (function (_super) {
     __extends(InternalServerErrorException, _super);
     function InternalServerErrorException(message) {
-        if (message === void 0) { message = INTERNAL_SERVER_ERROR; }
         return _super.call(this, message, types_1.HttpStatusCode.InternalServer) || this;
     }
     return InternalServerErrorException;

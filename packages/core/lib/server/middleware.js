@@ -56,12 +56,16 @@ function errorLogger(err, req, res, next) {
 }
 exports.errorLogger = errorLogger;
 function sendError(req, res) {
+    console.log("sendError", req.error);
     var statusCode = req.error && req.error.status || 404;
     var message = req.error && req.error.message || 'Not Found';
     var appName = process.env['JSHERO_APPNAME'] || 'JSHERO';
     if (statusCode === types_1.HttpStatusCode.RedirectMovedPermanent || statusCode === types_1.HttpStatusCode.RedirectTemporary) {
         console.log(req.url);
         res.writeHead(statusCode, { location: req.error.destination }).end();
+    }
+    else if (typeof (message) !== 'string') {
+        res.status(statusCode).send(message).end();
     }
     else {
         var fileSource = (0, utils_1.resolveApp)("build/browser/" + statusCode + ".html");
@@ -89,8 +93,10 @@ function requestContextMiddleware(req, res, next) {
         throw new exceptions_1.ForbiddenException(message);
     };
     req.badRequest = function (message) {
-        res.setHeader('Errors', message);
         throw new exceptions_1.BadRequestException(message);
+    };
+    req.internalServerError = function (message) {
+        throw new exceptions_1.InternalServerErrorException(message);
     };
     next();
 }

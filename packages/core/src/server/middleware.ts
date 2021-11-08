@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { NotFoundException, Redirect, UnAuthorizedException, ForbiddenException, BadRequestException } from '../exceptions'
+import { NotFoundException, Redirect, UnAuthorizedException, ForbiddenException, BadRequestException, InternalServerErrorException } from '../exceptions'
 import { resolveApp } from './utils'
 import { HttpNextFunction, HttpRequest, HttpResponse, HttpStatusCode } from '../types'
 
@@ -9,12 +9,15 @@ export async function errorLogger (err: any, req: HttpRequest, res: HttpResponse
   next()
 }
 export function sendError (req: HttpRequest, res: HttpResponse) {
+  console.log("sendError", req.error)
   const statusCode =  req.error && req.error.status || 404
   const message = req.error && req.error.message || 'Not Found'
   const appName = process.env['JSHERO_APPNAME'] || 'JSHERO'
   if (statusCode === HttpStatusCode.RedirectMovedPermanent || statusCode === HttpStatusCode.RedirectTemporary) {
     console.log(req.url)
     res.writeHead(statusCode, { location: req.error.destination }).end()
+  } else if (typeof(message) !== 'string') {
+    res.status(statusCode).send(message).end()
   } else {
     const fileSource = resolveApp(`build/browser/${statusCode}.html`)
     res.status(statusCode)
@@ -64,8 +67,10 @@ export function requestContextMiddleware(req: HttpRequest, res: HttpResponse, ne
     throw new ForbiddenException(message)
   }
   req.badRequest = (message) => {
-    res.setHeader('Errors', message)
     throw new BadRequestException(message)
+  }
+  req.internalServerError = (message) => {
+    throw new InternalServerErrorException(message)
   }
   next()
 }

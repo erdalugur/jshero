@@ -55,10 +55,11 @@ export interface JsHeroServer extends Express {
 }
 export interface HttpRequest extends Request {
     redirect(destination: string, permanent?: boolean): void;
-    notFound(message?: string): void;
-    forbidden(message?: string): void;
-    unAuthorized(message?: string): void;
-    badRequest(message?: string): void;
+    notFound<T>(message?: T): void;
+    forbidden<T>(message?: T): void;
+    unAuthorized<T>(message?: T): void;
+    badRequest<T>(message?: T): void;
+    internalServerError<T>(message?: T): void;
     error: any;
 }
 export interface HttpResponse extends Response {

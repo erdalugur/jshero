@@ -1,12 +1,11 @@
 import './polyfill'
 import { resolveRootModule } from '../resolver'
 import express, { Request, Response, NextFunction } from 'express'
-import { CreateAppOptions, HttpNextFunction, HttpRequest, HttpResponse } from '../types'
+import { CreateAppOptions } from '../types'
 import compression from 'compression'
 import { resolveApp } from './utils'
 import { errorLogger, sendError, requestContextMiddleware } from './middleware'
 import { createRenderer } from './renderer'
-import { Redirect } from '../exceptions'
 
 const staticPath = resolveApp('build/browser')
 

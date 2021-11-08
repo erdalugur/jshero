@@ -9,22 +9,41 @@ INTERNAL_SERVER_ERROR = 'Internal Server Error';
  * @example
  * throw new HttpException("your error message", your_status_number)
  */
-export class HttpException extends Error {
+export class HttpException <T>{
   status: HttpStatusCode
   trustedException: boolean
-  constructor(message: string, status: HttpStatusCode){
-    super(message)
+  constructor(message: T, status: HttpStatusCode){
     this.status = status
     this.trustedException = true
+    this.message = this.defaultMessage(status, message)
   }
+
+  defaultMessage (statusCode: HttpStatusCode, message: any) { 
+    if (typeof(message) === 'undefined') {
+      switch (statusCode) {
+        case HttpStatusCode.BadRequest:
+          return BAD_REQUEST
+        case HttpStatusCode.InternalServer:
+          return INTERNAL_SERVER_ERROR
+        case HttpStatusCode.UnAuthorized:
+          return UN_AUTHORIZED
+        case HttpStatusCode.NotFound:
+          return NOT_FOUND
+        case HttpStatusCode.Forbidden:
+          return FORBIDDEN
+      } 
+    } else {
+      return message
+    }
+  }
+  message: any
 }
 /**
  * @example
  * throw new NotFoundException()
  */
-export class NotFoundException extends HttpException {
-  notFound: boolean = true
-  constructor(message: string = NOT_FOUND) {
+export class NotFoundException<T> extends HttpException<T>{
+  constructor(message?:T) {
     super(message, HttpStatusCode.NotFound)
   }
 }
@@ -32,8 +51,8 @@ export class NotFoundException extends HttpException {
  * @example
  * throw new BadRequestException()
  */
-export class BadRequestException extends HttpException {
-  constructor(message: string = BAD_REQUEST) {
+export class BadRequestException<T> extends HttpException<T>{
+  constructor(message?: T) {
     super(message, HttpStatusCode.BadRequest)
   }
 }
@@ -41,8 +60,8 @@ export class BadRequestException extends HttpException {
  * @example
  * throw new ForbiddenException()
  */
-export class ForbiddenException extends HttpException {
-  constructor (message: string = FORBIDDEN) {
+export class ForbiddenException<T> extends HttpException<T>{
+  constructor (message?: T) {
     super(message, HttpStatusCode.Forbidden)
   }
 }
@@ -50,8 +69,8 @@ export class ForbiddenException extends HttpException {
  * @example
  * throw new UnAuthorizedException()
  */
-export class UnAuthorizedException extends HttpException {
-  constructor (message: string = UN_AUTHORIZED) {
+export class UnAuthorizedException<T> extends HttpException<T> {
+  constructor (message?: T) {
     super(message, HttpStatusCode.UnAuthorized)
   }
 }
@@ -59,12 +78,12 @@ export class UnAuthorizedException extends HttpException {
  * @example
  * throw new InternalServerErrorException()
  */
-export class InternalServerErrorException extends HttpException {
-  constructor (message: string = INTERNAL_SERVER_ERROR) {
+export class InternalServerErrorException<T> extends HttpException<T> {
+  constructor (message?: T) {
     super(message, HttpStatusCode.InternalServer)
   }
 }
-export class Redirect extends HttpException{
+export class Redirect extends HttpException<string> {
   destination: string
   statusCode: number = HttpStatusCode.RedirectTemporary
   redirectionResult: boolean = true
