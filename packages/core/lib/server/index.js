@@ -58,6 +58,7 @@ var compression_1 = __importDefault(require("compression"));
 var utils_1 = require("./utils");
 var middleware_1 = require("./middleware");
 var renderer_1 = require("./renderer");
+var decorators_1 = require("../decorators");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
 function createServer(options) {
     var app = (0, express_1.default)();
@@ -70,8 +71,9 @@ function createServer(options) {
         modules.forEach(function (_a) {
             var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
             var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache;
+            var middlewares = (0, decorators_1.injectMiddleware)(x.controller);
             if (x.view) {
-                router.get(x.path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                router.get(x.path, middlewares, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var cacheKey, result, error_1;
                     var _this = this;
                     return __generator(this, function (_a) {
@@ -112,7 +114,7 @@ function createServer(options) {
             routes.forEach(function (_a) {
                 var methodName = _a.methodName, requestMethod = _a.requestMethod, path = _a.path;
                 var route = (prefix + x.path + path).replace('//', '/');
-                router[requestMethod](route, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                router[requestMethod](route, middlewares, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var result, error_2;
                     return __generator(this, function (_a) {
                         switch (_a.label) {

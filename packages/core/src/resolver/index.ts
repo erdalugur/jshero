@@ -2,6 +2,7 @@ import META_KEYS from "jshero-constants";
 import { AppModule, RouteDefinition } from "../types";
 import { getInjectionsPerRequest, Injector } from "../decorators";
 import { cacheManager, WithOutputCache } from "../cache";
+import { InternalServerErrorException } from "../exceptions";
 
 
 function resolveController (target: Object) {
@@ -26,6 +27,9 @@ function resolveController (target: Object) {
   async function fn (req: any, res:any, next: any, method?: string): Promise<any>
   async function fn (req: any, res:any, next: any, method: string = ''): Promise<any> {
     const methodName: string =  method || Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
+    if (methodName === '') {
+      throw new InternalServerErrorException('View handler not found')
+    }
     return createFn(methodName, req, res, next)()
   }
   function resolvePrefix (): string {
@@ -74,4 +78,3 @@ export function resolveRootModule (bootstrap: object) {
     resolveController
   }
 }
-

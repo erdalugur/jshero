@@ -52,6 +52,7 @@ exports.resolveRootModule = void 0;
 var jshero_constants_1 = __importDefault(require("jshero-constants"));
 var decorators_1 = require("../decorators");
 var cache_1 = require("../cache");
+var exceptions_1 = require("../exceptions");
 function resolveController(target) {
     function createFn(methodName, req, res, next) {
         var _a;
@@ -84,6 +85,9 @@ function resolveController(target) {
             var methodName;
             return __generator(this, function (_a) {
                 methodName = method || Reflect.getMetadata(jshero_constants_1.default.VIEW_HANDLER, target) || '';
+                if (methodName === '') {
+                    throw new exceptions_1.InternalServerErrorException('View handler not found');
+                }
                 return [2 /*return*/, createFn(methodName, req, res, next)()];
             });
         });

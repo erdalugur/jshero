@@ -31,8 +31,10 @@ export interface InjectPerRequest {
     res: any;
     next: any;
 }
+export declare type MiddlewareFn = (req: HttpRequest, res: HttpResponse, next: HttpNextFunction) => void;
 export interface ControllerOptions {
     prefix?: string;
+    middleware?: Array<MiddlewareFn>;
 }
 export interface AppModule {
     view?: any;
