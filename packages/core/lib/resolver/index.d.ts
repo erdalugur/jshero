@@ -1,4 +1,4 @@
-import { AppModule, RouteDefinition } from "../types";
+import { AppModule, RouteDefinition, MiddlewareFn } from "../types";
 import { WithOutputCache } from "../cache";
 declare function resolveController(target: Object): {
     fn: {
@@ -8,6 +8,11 @@ declare function resolveController(target: Object): {
     resolveRoutes: () => Array<RouteDefinition>;
     resolvePrefix: () => string;
     withOutputCache: typeof WithOutputCache;
+    resolveMiddleware: () => MiddlewareFn[];
+    injectedMiddleware: {
+        (propertyKey: string): MiddlewareFn[];
+        (viewhandler?: boolean): MiddlewareFn[];
+    };
 };
 export declare function resolveRootModule(bootstrap: object): {
     providers: Function[];

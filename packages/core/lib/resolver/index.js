@@ -53,6 +53,7 @@ var jshero_constants_1 = __importDefault(require("jshero-constants"));
 var decorators_1 = require("../decorators");
 var cache_1 = require("../cache");
 var exceptions_1 = require("../exceptions");
+var constants_1 = require("../constants");
 function resolveController(target) {
     function createFn(methodName, req, res, next) {
         var _a;
@@ -99,11 +100,35 @@ function resolveController(target) {
     function resolveRoutes() {
         return Reflect.getMetadata(jshero_constants_1.default.ROUTES, target) || [];
     }
+    function resolveMiddleware() {
+        if (!Reflect.hasMetadata(constants_1.MIDDLEWARE, target)) {
+            return [];
+        }
+        return (Reflect.getMetadata(constants_1.MIDDLEWARE, target) || []);
+    }
+    function injectedMiddleware(param) {
+        var propertyKey = '';
+        if (typeof (param) === 'boolean') {
+            propertyKey = Reflect.getMetadata(jshero_constants_1.default.VIEW_HANDLER, target);
+        }
+        else {
+            propertyKey = param;
+        }
+        var middlewares = (Reflect.getMetadata(constants_1.INJECT_MIDDLEWARE, target) || []);
+        var record = middlewares.find(function (x) { return x.propertyKey === propertyKey; });
+        var response = [];
+        if (record) {
+            response = record.middlewares;
+        }
+        return response;
+    }
     return {
         fn: fn,
         resolveRoutes: resolveRoutes,
         resolvePrefix: resolvePrefix,
-        withOutputCache: cache_1.WithOutputCache
+        withOutputCache: cache_1.WithOutputCache,
+        resolveMiddleware: resolveMiddleware,
+        injectedMiddleware: injectedMiddleware
     };
 }
 function resolveRootModule(bootstrap) {

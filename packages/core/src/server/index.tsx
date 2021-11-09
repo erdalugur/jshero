@@ -6,7 +6,6 @@ import compression from 'compression'
 import { resolveApp } from './utils'
 import { errorLogger, sendError, requestContextMiddleware } from './middleware'
 import { createRenderer } from './renderer'
-import { injectMiddleware } from '../decorators'
 
 const staticPath = resolveApp('build/browser')
 
@@ -23,10 +22,11 @@ export function createServer (options: CreateAppOptions) {
     const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
 
     modules.forEach(({statusCode = 200 ,...x}) => {
-      const { fn, resolvePrefix, resolveRoutes, withOutputCache } = resolveController(x.controller)
-      const middlewares = injectMiddleware(x.controller)
+      const { fn, resolvePrefix, resolveRoutes, withOutputCache, resolveMiddleware, injectedMiddleware } = resolveController(x.controller)
+      const middlewares = resolveMiddleware()
       if (x.view) {
-        router.get(x.path, middlewares, async (req: any, res: any, next: any) => {
+        const allMiddleware = [...middlewares, ...injectedMiddleware(true)]
+        router.get(x.path, allMiddleware, async (req: any, res: any, next: any) => {
           try {
             const cacheKey = `__${x.path}__${x.name}__`
             const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {
@@ -46,7 +46,8 @@ export function createServer (options: CreateAppOptions) {
       const routes = resolveRoutes()
       routes.forEach(({ methodName, requestMethod, path}) => {
         const route = (prefix + x.path + path).replace('//', '/')
-        router[requestMethod](route, middlewares, async (req: Request, res: Response, next: NextFunction) => {
+        const allMiddleware = [...middlewares, ...injectedMiddleware(methodName)]
+        router[requestMethod](route, allMiddleware, async (req: Request, res: Response, next: NextFunction) => {
           try {
             const result = await fn(req, res, next, methodName)
             res.status(statusCode).json(result)

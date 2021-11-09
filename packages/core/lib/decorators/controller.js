@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.injectMiddleware = exports.ViewHandler = exports.Controller = void 0;
+exports.InjectMiddleware = exports.ViewHandler = exports.Controller = void 0;
 require("reflect-metadata");
 var jshero_constants_1 = __importDefault(require("jshero-constants"));
-var MIDDLEWARE = '__MIDDLEWARE__';
+var constants_1 = require("../constants");
 function Controller(options) {
     return function (target) {
         var prefix = options && options.prefix || '';
@@ -16,7 +16,7 @@ function Controller(options) {
         }
         var middleware = options && options.middleware || [];
         if (middleware.length > 0) {
-            Reflect.defineMetadata(MIDDLEWARE, middleware, target);
+            Reflect.defineMetadata(constants_1.MIDDLEWARE, middleware, target);
         }
     };
 }
@@ -31,10 +31,14 @@ function ViewHandler() {
     };
 }
 exports.ViewHandler = ViewHandler;
-function injectMiddleware(target) {
-    if (!Reflect.hasMetadata(MIDDLEWARE, target)) {
-        return [];
-    }
-    return (Reflect.getMetadata(MIDDLEWARE, target) || []);
+function InjectMiddleware(middleware) {
+    return function (target, propertyKey, descriptor) {
+        var middlewares = Reflect.getMetadata(constants_1.INJECT_MIDDLEWARE, target.constructor) || [];
+        middlewares.push({
+            propertyKey: propertyKey,
+            middlewares: middleware
+        });
+        Reflect.defineMetadata(constants_1.INJECT_MIDDLEWARE, middlewares, target.constructor);
+    };
 }
-exports.injectMiddleware = injectMiddleware;
+exports.InjectMiddleware = InjectMiddleware;

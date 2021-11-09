@@ -1,9 +1,8 @@
 import 'reflect-metadata'
 import META_KEYS from 'jshero-constants';
-import { ControllerOptions, MiddlewareFn } from '../types'
+import { ControllerOptions, MiddlewareFn, InjectMiddlewareType } from '../types'
+import { MIDDLEWARE, INJECT_MIDDLEWARE } from '../constants'
 
-
-const MIDDLEWARE = '__MIDDLEWARE__'
 export function Controller (options?: ControllerOptions): ClassDecorator {
   return (target: Function) => {    
     const prefix = options && options.prefix || ''
@@ -29,9 +28,13 @@ export function ViewHandler (): MethodDecorator {
   };
 }
 
-export function injectMiddleware(target: Object) {
-  if (!Reflect.hasMetadata(MIDDLEWARE, target)) {
-    return []
-  }
-  return (Reflect.getMetadata(MIDDLEWARE, target) || []) as MiddlewareFn []
+export function InjectMiddleware(middleware: MiddlewareFn[]) {
+  return (target, propertyKey, descriptor) => {
+    const middlewares: InjectMiddlewareType[] = Reflect.getMetadata(INJECT_MIDDLEWARE, target.constructor) || []
+    middlewares.push({
+      propertyKey: propertyKey,
+      middlewares: middleware
+    })
+    Reflect.defineMetadata(INJECT_MIDDLEWARE, middlewares, target.constructor)
+  };
 }

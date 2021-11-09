@@ -73,3 +73,7 @@ export interface HttpRequest extends Request {
 }
 export interface HttpResponse extends Response { }
 export interface HttpNextFunction extends NextFunction { }
+export interface InjectMiddlewareType {
+  propertyKey: string
+  middlewares: Array<MiddlewareFn>
+}

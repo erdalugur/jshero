@@ -1,9 +1,9 @@
 import META_KEYS from "jshero-constants";
-import { AppModule, RouteDefinition } from "../types";
+import { AppModule, RouteDefinition, MiddlewareFn, InjectMiddlewareType } from "../types";
 import { getInjectionsPerRequest, Injector } from "../decorators";
 import { cacheManager, WithOutputCache } from "../cache";
 import { InternalServerErrorException } from "../exceptions";
-
+import { MIDDLEWARE, INJECT_MIDDLEWARE } from "../constants";
 
 function resolveController (target: Object) {
   
@@ -39,11 +39,37 @@ function resolveController (target: Object) {
   function resolveRoutes (): Array<RouteDefinition>{
     return Reflect.getMetadata(META_KEYS.ROUTES, target) || []
   }
+  function resolveMiddleware() {
+    if (!Reflect.hasMetadata(MIDDLEWARE, target)) {
+      return []
+    }
+    return (Reflect.getMetadata(MIDDLEWARE, target) || []) as MiddlewareFn []
+  }
+  function injectedMiddleware(propertyKey: string): MiddlewareFn[]
+  function injectedMiddleware(viewhandler?: boolean): MiddlewareFn[]
+  function injectedMiddleware(param: boolean | string): MiddlewareFn[] {
+    let propertyKey: string = ''
+    if (typeof(param) === 'boolean') {
+      propertyKey = Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target)
+    } else {
+      propertyKey = param
+    }
+    const middlewares = (Reflect.getMetadata(INJECT_MIDDLEWARE, target) || []) as InjectMiddlewareType[]
+    const record = middlewares.find(x => x.propertyKey === propertyKey)
+    let response = []
+    if (record) {
+      response = record.middlewares
+    }
+    return response
+  }
+  
   return {
     fn,
     resolveRoutes,
     resolvePrefix,
-    withOutputCache: WithOutputCache
+    withOutputCache: WithOutputCache,
+    resolveMiddleware,
+    injectedMiddleware
   }
 }
 

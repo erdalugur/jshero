@@ -46,6 +46,15 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -58,7 +67,6 @@ var compression_1 = __importDefault(require("compression"));
 var utils_1 = require("./utils");
 var middleware_1 = require("./middleware");
 var renderer_1 = require("./renderer");
-var decorators_1 = require("../decorators");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
 function createServer(options) {
     var app = (0, express_1.default)();
@@ -70,10 +78,11 @@ function createServer(options) {
         var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
         modules.forEach(function (_a) {
             var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
-            var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache;
-            var middlewares = (0, decorators_1.injectMiddleware)(x.controller);
+            var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache, resolveMiddleware = _c.resolveMiddleware, injectedMiddleware = _c.injectedMiddleware;
+            var middlewares = resolveMiddleware();
             if (x.view) {
-                router.get(x.path, middlewares, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                var allMiddleware = __spreadArray(__spreadArray([], middlewares, true), injectedMiddleware(true), true);
+                router.get(x.path, allMiddleware, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var cacheKey, result, error_1;
                     var _this = this;
                     return __generator(this, function (_a) {
@@ -114,7 +123,8 @@ function createServer(options) {
             routes.forEach(function (_a) {
                 var methodName = _a.methodName, requestMethod = _a.requestMethod, path = _a.path;
                 var route = (prefix + x.path + path).replace('//', '/');
-                router[requestMethod](route, middlewares, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+                var allMiddleware = __spreadArray(__spreadArray([], middlewares, true), injectedMiddleware(methodName), true);
+                router[requestMethod](route, allMiddleware, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var result, error_2;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
