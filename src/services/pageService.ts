@@ -1,10 +1,7 @@
 export class PageService {
   private readonly pageMock: Record<string, any> = {
     'home': {
-      meta: {
-        title: 'JSHERO'
-      },
-      props: { }
+      title: 'JSHERO'
     }
   }
 

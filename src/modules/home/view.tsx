@@ -5,13 +5,13 @@ import { useStyles } from './style'
 
 export function View () {
   const classes = useStyles()
-  const { meta } = useAppSelector(x => x.home)
+  const { title } = useAppSelector(x => x.home)
   return(
     <div className={classes.container}>
       <Meta>
-        <title>{meta.title}</title>
+        <title>{title}</title>
       </Meta>
-      <h1>{meta.title}</h1>
+      <h1>{title}</h1>
       <p>Hoş Geldiniz!</p>
     </div>
   )
