@@ -5,35 +5,37 @@ module.exports = {
     return `export interface ${pascalCaseName}State { }`
   },
   view (name) {
-    const { pascalCaseName } = makeNames(name)
+    const { pascalCaseName, lowerCaseName } = makeNames(name)
     return `import React from 'react'
-import { useStyles } from './style'
-
-export function View () {
-  const classes = useStyles()
-  return(
-    <div className={classes.container}>
-      <h1>${pascalCaseName} Page!</h1>
-    </div>
-  )
-}`
+    import { Meta } from 'jshero-core'
+    import { useAppSelector } from 'lib'
+    import { useStyles } from './style'
+    
+    export function View () {
+      const classes = useStyles()
+      const ${lowerCaseName} = useAppSelector(x => x.lowerCaseName)
+      return(
+        <div className={classes.container}>
+          <Meta>
+            <title>${pascalCaseName}</title>
+          </Meta>
+          <h1>${pascalCaseName}</h1>
+          <p>Hoş Geldiniz!</p>
+        </div>
+      )
+    }`
   },
   controller (name) {
     const { pascalCaseName } = makeNames(name)
     return `import { ViewHandler, Get, Controller } from "jshero-core"
-import { PageState } from "../../types"
 import { ${pascalCaseName}State } from "./model";
 
 @Controller()
 export class ${pascalCaseName}Controller {
   @ViewHandler()
   @Get()
-  handler (): PageState<${pascalCaseName}State>  {
+  handler (): Promise<${pascalCaseName}State>  {
     return {
-      meta: {
-        title: ''
-      },
-      props: {}
     }
   }
 }`
@@ -71,14 +73,9 @@ export const useStyles = createUseStyles({
   },
   reducer(name) {
     const { pascalCaseName } = makeNames(name)
-    return `import { PageState } from "../../types"
-    import { ${pascalCaseName}State } from './model'
+    return `import { ${pascalCaseName}State } from './model'
 
-const initialState: PageState<${pascalCaseName}State> = {
-  meta: {
-    title: ''
-  },
-  props: {}
+const initialState: ${pascalCaseName}State = {
 }
 export function reducer (state = initialState, action: any){
   return state
