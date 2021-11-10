@@ -2,28 +2,28 @@ const { makeNames } = require("../utils")
 module.exports = {
   model (name){
     const { pascalCaseName } = makeNames(name)
-    return `export interface ${pascalCaseName}State { }`
+    return `export interface ${pascalCaseName}State { 
+  title: string 
+}`
   },
   view (name) {
-    const { pascalCaseName, lowerCaseName } = makeNames(name)
+    const { pascalCaseName } = makeNames(name)
     return `import React from 'react'
-    import { Meta } from 'jshero-core'
-    import { useAppSelector } from 'lib'
-    import { useStyles } from './style'
-    
-    export function View () {
-      const classes = useStyles()
-      const ${lowerCaseName} = useAppSelector(x => x.lowerCaseName)
-      return(
-        <div className={classes.container}>
-          <Meta>
-            <title>${pascalCaseName}</title>
-          </Meta>
-          <h1>${pascalCaseName}</h1>
-          <p>Hoş Geldiniz!</p>
-        </div>
-      )
-    }`
+import { Meta } from 'jshero-core'
+import { useStyles } from './style'
+
+export function View () {
+  const classes = useStyles()
+  return(
+    <div className={classes.container}>
+      <Meta>
+        <title>${pascalCaseName}</title>
+      </Meta>
+      <h1>${pascalCaseName}</h1>
+      <p>Hoş Geldiniz!</p>
+    </div>
+  )
+}`
   },
   controller (name) {
     const { pascalCaseName } = makeNames(name)
@@ -34,8 +34,9 @@ import { ${pascalCaseName}State } from "./model";
 export class ${pascalCaseName}Controller {
   @ViewHandler()
   @Get()
-  handler (): Promise<${pascalCaseName}State>  {
+  async handler (): Promise<${pascalCaseName}State>  {
     return {
+      title: '${pascalCaseName}'
     }
   }
 }`
@@ -76,6 +77,7 @@ export const useStyles = createUseStyles({
     return `import { ${pascalCaseName}State } from './model'
 
 const initialState: ${pascalCaseName}State = {
+  title: ''
 }
 export function reducer (state = initialState, action: any){
   return state
