@@ -1,12 +1,12 @@
 const fs = require('fs')
 const path = require('path')
-const { success, makeNames } = require('../utils')
+const { success, makeNames, resolveProject } = require('../utils')
 const templates = require('../templates')
 /**
  * 
  * @param {{name:string}} param0 
  */
-function createModule ({ name }) {
+function createModule ( { name}) {
 	const { lowerCaseName } = makeNames(name)
 	const projectRoot = path.resolve(process.cwd())
 	if (fs.existsSync(projectRoot)) {
@@ -18,9 +18,8 @@ function createModule ({ name }) {
 			fs.writeFileSync(`${module}/${key}`, templates[action](name))
 		})
 		success('module created successfully')
+	}else {
+
 	}
 }
-
-module.exports = {
-	createModule
-}
+module.exports = createModule

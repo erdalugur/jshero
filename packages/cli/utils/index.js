@@ -2,8 +2,35 @@
 const path = require('path')
 const chalk = require('chalk');
 const fs = require('fs');
+const https = require('https');
+const { Command } = require('commander')
+function getJsHeroVersion () {
+  return new Promise((resolve, reject) => {
+    https
+      .get(
+        'https://registry.npmjs.org/-/package/jshero-core/dist-tags',
+        res => {
+          if (res.statusCode === 200) {
+            let body = '';
+            res.on('data', data => (body += data));
+            res.on('end', () => {
+              resolve(JSON.parse(body).latest);
+            });
+          } else {
+            reject();
+          }
+        }
+      )
+      .on('error', () => {
+        reject();
+      });
+  });
+}
 
 module.exports = {
+  resolveApp (path) {
+    return require.resolve(path)
+  },
   resolveProject () {
     let name = process.argv[3].trim()
     let projectRoot = path.resolve(name);
@@ -12,24 +39,21 @@ module.exports = {
       projectRoot
     }
   },
+  warning (message) {
+    console.log(chalk.yellow(message))
+  },
   error (message) {
-    console.log()
     console.log(chalk.red(message))
-    console.log()
   },
   success (message) {
-    console.log()
     console.log(chalk.green(message))
-    console.log() 
   },
   message (message) {
-    console.log()
     console.log(message)
-    console.log() 
   },
-  setPackageJson (projectRoot) {
+  async setPackageJson (projectRoot, name) {
     const meta = {
-      "name": "jshero_app",
+      "name": name,
       "version": "1.0.0",
       "main": "",
       "author": "",
@@ -40,6 +64,10 @@ module.exports = {
     // delete config.bugs
     // delete config.homepage
     // delete config.bin
+
+    config.name = name
+    config.version = "1.0.0"
+    config.dependencies['jshero-core'] = await getJsHeroVersion()
 
     fs.writeFileSync(packageJson, JSON.stringify({...config, ...meta }, null, 2), { encoding: 'utf-8' })
   },
