@@ -30,7 +30,7 @@ export function createServer (options: CreateAppOptions) {
           try {
             const cacheKey = `__${x.path}__${x.name}__`
             const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {
-              const result = await fn(req, res, next)
+              const result = await fn<unknown>(req, res, next)
               const store = configureStore({[x.name]: result }, reducers)
               const { render } = createRenderer({ modules, store, url: req.url as string })
               return render()

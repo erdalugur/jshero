@@ -83,13 +83,14 @@ function resolveController(target) {
     function fn(req, res, next, method) {
         if (method === void 0) { method = ''; }
         return __awaiter(this, void 0, void 0, function () {
-            var methodName;
+            var methodName, fn;
             return __generator(this, function (_a) {
                 methodName = method || Reflect.getMetadata(jshero_constants_1.default.VIEW_HANDLER, target) || '';
                 if (methodName === '') {
                     throw new exceptions_1.InternalServerErrorException('View handler not found');
                 }
-                return [2 /*return*/, createFn(methodName, req, res, next)()];
+                fn = createFn(methodName, req, res, next);
+                return [2 /*return*/, fn()];
             });
         });
     }

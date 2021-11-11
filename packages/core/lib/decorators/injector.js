@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getInjectionsPerRequest = exports.Injector = void 0;
 require("reflect-metadata");
 var jshero_constants_1 = __importDefault(require("jshero-constants"));
+var constants_1 = require("../constants");
 // eslint-disable-next-line new-parens
 exports.Injector = new /** @class */ (function () {
     function class_1() {
@@ -30,6 +31,10 @@ exports.Injector = new /** @class */ (function () {
 function getInjectionsPerRequest(_a) {
     var instance = _a.instance, methodName = _a.methodName, next = _a.next, req = _a.req, res = _a.res;
     var props = [];
+    if (Reflect.hasMetadata(constants_1.HTTP_CONTEXT, instance, methodName)) {
+        var index = Reflect.getMetadata(constants_1.HTTP_CONTEXT, instance, methodName);
+        props[index] = { req: req, res: res, next: next };
+    }
     if (Reflect.hasMetadata(jshero_constants_1.default.BODY, instance, methodName)) {
         var index = Reflect.getMetadata(jshero_constants_1.default.BODY, instance, methodName);
         props[index] = req.body;

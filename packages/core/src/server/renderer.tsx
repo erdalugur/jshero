@@ -2,13 +2,14 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { JssProvider, SheetsRegistry } from 'react-jss'
-import fs from 'fs'
 import { Helmet } from "react-helmet"
 import { createApp } from '../main'
-import { resolveApp } from './utils'
+import { resolveApp, readHtml } from './utils'
 import { AppModule } from '../types'
 
 const staticPath = resolveApp('build/browser')
+const template = readHtml(staticPath)
+
 interface Renderer {
   url: string
   store: any
@@ -26,7 +27,6 @@ export function createRenderer ({url, store, modules}: Renderer) {
 
   return {
     render (){
-      const template = fs.readFileSync(`${staticPath}/index.html`, { encoding: 'utf-8'})
       const helmet = Helmet.renderStatic();
       const regexp = / data-react-helmet="true"/g
       const html = helmet.htmlAttributes.toString().replace(regexp, ''),

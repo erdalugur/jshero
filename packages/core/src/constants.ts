@@ -1,3 +1,4 @@
 export const ROOT_MODULE = 'ROOT_MODULE'
 export const MIDDLEWARE = '__MIDDLEWARE__'
 export const INJECT_MIDDLEWARE = '__INJECT_MIDDLEWARE__'
+export const HTTP_CONTEXT = '__HTTP_CONTEXT__'

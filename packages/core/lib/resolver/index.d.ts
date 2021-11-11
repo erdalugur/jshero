@@ -2,8 +2,8 @@ import { AppModule, RouteDefinition, MiddlewareFn } from "../types";
 import { WithOutputCache } from "../cache";
 declare function resolveController(target: Object): {
     fn: {
-        (req: any, res: any, next: any): Promise<any>;
-        (req: any, res: any, next: any, method?: string): Promise<any>;
+        <T>(req: any, res: any, next: any): Promise<T>;
+        <T_1>(req: any, res: any, next: any, method?: string): Promise<T_1>;
     };
     resolveRoutes: () => Array<RouteDefinition>;
     resolvePrefix: () => string;

@@ -17,5 +17,5 @@ export declare const cacheManager: {
     get<T>(target: Object, propertyKey: string): T;
     set(key: string, value: any, target: Object): void;
 };
-export declare function WithOutputCache(cacheKey: string, ttl: number, fn: () => Promise<any>): Promise<any>;
+export declare function WithOutputCache<T>(cacheKey: string, ttl: number, fn: () => Promise<T>): Promise<T>;
 export {};

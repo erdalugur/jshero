@@ -7,30 +7,31 @@ import { MIDDLEWARE, INJECT_MIDDLEWARE } from "../constants";
 
 function resolveController (target: Object) {
   
-  function createFn(methodName: string, req: any, res: any, next: any) {
+  function createFn<T>(methodName: string, req: any, res: any, next: any) {
     const instance = Injector.resolve(target)
     const injections = getInjectionsPerRequest({ instance, methodName, req, res, next })
     const fn = instance[methodName].bind(instance, ...injections)
     const cache = cacheManager.get<any>(target, methodName)
     if (cache)
-      return async () => cache
+      return async () => cache as T
 
     return async () => {
       const result = await fn() 
       if (cache)
         cacheManager.set(methodName, result, target)
         
-      return result
+      return result as T
     }
   }
-  async function fn (req: any, res:any, next: any): Promise<any>
-  async function fn (req: any, res:any, next: any, method?: string): Promise<any>
-  async function fn (req: any, res:any, next: any, method: string = ''): Promise<any> {
+  async function fn <T>(req: any, res:any, next: any): Promise<T>
+  async function fn <T>(req: any, res:any, next: any, method?: string): Promise<T>
+  async function fn <T>(req: any, res:any, next: any, method: string = ''): Promise<T> {
     const methodName: string =  method || Reflect.getMetadata(META_KEYS.VIEW_HANDLER, target) || ''
     if (methodName === '') {
       throw new InternalServerErrorException('View handler not found')
     }
-    return createFn(methodName, req, res, next)()
+    const fn = createFn<T>(methodName, req, res, next)
+    return fn()
   }
   function resolvePrefix (): string {
     let prefix: string = Reflect.getMetadata(META_KEYS.PREFIX, target) || ''

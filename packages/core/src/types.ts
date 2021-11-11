@@ -77,3 +77,9 @@ export interface InjectMiddlewareType {
   propertyKey: string
   middlewares: Array<MiddlewareFn>
 }
+
+export interface HttpContext {
+  req: HttpRequest
+  res: HttpResponse
+  next: HttpNextFunction
+}

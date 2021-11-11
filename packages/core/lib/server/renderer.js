@@ -8,11 +8,11 @@ var react_1 = __importDefault(require("react"));
 var server_1 = require("react-dom/server");
 var react_router_dom_1 = require("react-router-dom");
 var react_jss_1 = require("react-jss");
-var fs_1 = __importDefault(require("fs"));
 var react_helmet_1 = require("react-helmet");
 var main_1 = require("../main");
 var utils_1 = require("./utils");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
+var template = (0, utils_1.readHtml)(staticPath);
 function createRenderer(_a) {
     var url = _a.url, store = _a.store, modules = _a.modules;
     var sheets = new react_jss_1.SheetsRegistry();
@@ -20,7 +20,6 @@ function createRenderer(_a) {
         react_1.default.createElement(react_router_dom_1.StaticRouter, { location: url }, (0, main_1.createApp)(store, modules))));
     return {
         render: function () {
-            var template = fs_1.default.readFileSync(staticPath + "/index.html", { encoding: 'utf-8' });
             var helmet = react_helmet_1.Helmet.renderStatic();
             var regexp = / data-react-helmet="true"/g;
             var html = helmet.htmlAttributes.toString().replace(regexp, ''), head = [

@@ -29,3 +29,4 @@ export declare const Next: () => ParameterDecorator;
  * testMethod(@Param('id') id: string)
  */
 export declare function Param(parameter: string): ParameterDecorator;
+export declare const Ctx: () => ParameterDecorator;
