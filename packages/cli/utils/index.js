@@ -32,6 +32,11 @@ module.exports = {
     return require.resolve(path)
   },
   resolveProject () {
+    if (process.argv.length < 4) {
+      return {
+        name: ''
+      }
+    }
     let name = process.argv[3].trim()
     let projectRoot = path.resolve(name);
     return {
