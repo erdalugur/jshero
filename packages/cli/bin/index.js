@@ -1,43 +1,56 @@
 #!/usr/bin/env node
 
-const child = require('child_process')
 const { warning, resolveProject } = require('../utils')
 const createApp = require('../commands/init')
 const createModule = require('../commands/module')
+const config = require('../package.json')
 
-const commands = ['-m', 'module', '-i', 'init']
+const commands = { 
+  '-v': 'version', 
+  'version': 'version', 
+  '-i': 'init', 
+  'init': 'init',
+  '-m': 'module',
+  'module': 'module'
+}
 const args = process.argv.slice(2);
 
-const scriptIndex = args.findIndex(
-  x => commands.includes(x)
-);
+const baseCommand = args[0]
+const script = commands[baseCommand] || ''
 
-const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
-const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
-if (commands.includes(script)) {
-  let command = ''
-  if (script === '-m')  {
-    command = 'module'
-  } else if (script === '-i') {
-    command = 'init'
-  } else {
-    command = script
-  }
-  let { name, projectRoot } = resolveProject(process.argv)
-  if(!name) {
-    console.log(`${name === 'init' ? 'Project' : 'Module'} name is required`)
-    return
-  }
-  if (command == 'init') {
-    createApp({projectRoot, name})
-  } else if (command == 'module') {
-    createModule({name, projectRoot})
-  }
-
-} else {
+function incorrectFn () {
   console.log()
   warning(`Incorrect script available scripts now`)
   console.log()
-  console.log(commands.join(', '))
+  console.log(Object.keys(commands).join(', '))
   console.log()
+}
+
+function createAppFn() {
+  let { name, projectRoot } = resolveProject(process.argv)
+  if(!name) {
+    console.log('Project name is required')
+    return
+  }
+  createApp({projectRoot, name})
+}
+
+function createModuleFn () {
+  let { name, projectRoot } = resolveProject(process.argv)
+  if(!name) {
+    console.log('Module name is required')
+    return
+  }
+  createModule({name, projectRoot})
+}
+
+switch (script) {
+  case "module":
+    return createModuleFn()
+  case "init":
+    return createAppFn()
+  case "version":
+   return console.log(config.version)
+  default:
+    return incorrectFn()
 }

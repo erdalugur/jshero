@@ -3,7 +3,7 @@ const path = require('path')
 const chalk = require('chalk');
 const fs = require('fs');
 const https = require('https');
-const { Command } = require('commander')
+
 function getJsHeroVersion () {
   return new Promise((resolve, reject) => {
     https

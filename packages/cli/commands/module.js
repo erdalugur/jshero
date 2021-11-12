@@ -11,6 +11,10 @@ function createModule ( { name}) {
 	const projectRoot = path.resolve(process.cwd())
 	if (fs.existsSync(projectRoot)) {
 		const module = path.join(projectRoot, `/src/modules/${lowerCaseName}`)
+		if (fs.existsSync(module)) {
+			console.log(`${name} already exists`)
+			return
+		}
 		fs.mkdirSync(module)
 		const fileNames = ['controller.ts', 'index.ts', 'model.ts','reducer.ts','style.ts', 'view.tsx']
 		fileNames.forEach(key => {
