@@ -1,89 +1,100 @@
-# JSHERO Nedir?
+# JSHERO 
+## SEO FRIENDLY REACT FRAMEWORK
 
-React.js ile seo dostu(ssr) uygulamalar geliştirmek framework kullanmadan zor olabiliyor. 
-Bu proje karmaşık webpack configurasyonlarından sizi kurtardığı gibi Typescript ile geliştirme yapmanıza, 
-MVC mimarisinde moduller oluşturmanıza ve aynı zamanda Express server'ı genişletmenize olanak sağlar.
+Developing seo friendly (ssr) applications with React.js can be difficult without using a framework. This project saves you from complex webpack configurations and allows you to develop with Typescript, create modules in MVC architecture and also extend the Express server.
 
-#
 # JSHERO CLI
-### Global kurulum
+# Global install (required)
 ```
 npm install --global jshero-cli
 ```
-#
-## Proje oluşturmak
+# Currently available cli commands
 ```
-jshero -i my-project
+// app generate command
+jshero -i app
 
-cd my-project
+// module generate command
+jshero -m module_name: 
 ```
-## Projeyi Başlatmak
+
+# Create app
+```
+jshero -i app
+
+cd app
+```
+
+# Run as development mode
+```
+npm run dev
+```
+
+# Run as prodution mode
 ```
 npm run start
 ```
-#
-## Projeyi Build Etmek
+
+# Run for production build
 ```
 npm run build
 ```
-#
-## Modül oluşturmak
+
+# Modules
+jshero has a modular architecture. So let's learn to create module.
+
+# Create a module with cli command
 ```
-jshero -m mymodule 
+jshero -m hero 
 ```
-#
-Yeni bir modul aşağıdaki dosyalar ile birlikte oluşur.
-- Model.ts
-- View.tsx
-- Controller.ts
-- Style.ts
-- Reducer.ts
-- Index.ts
+
+
 ```js
-// modules/mymodule/index.ts
 
 import { Module } from 'jshero-core'
 import { View } from './view'
-import { MyModuleController } from './controller'
+import { HeroController } from './controller'
 import { reducer } from './reducer'
 
 @Module({
-  controller: MyModuleController,
-  name: 'mymodule' as const,
+  controller: HeroController,
+  name: 'hero' as const,
   reducer: reducer,
   view: View,
   exact: true,
-  path: '/mymodule',
+  path: '/hero',
   // outputCache: 30, optional output caching
 })
-export class MyModule {}
+export class HeroModule {}
+
 ```
-> Not: Oluşturulan modul uygulamada kullanıma açılması için RootModule kaydedilmelidir.
-## Modülü RootModule dahil etmek
+![hero module](https://github.com/erdalugur/jshero/blob/master/docs/HeroModule.png)
+
+# 💡 Root Module must be registered in order for the created module to be used in the application.
 
 ```javascript
 import { Module } from 'jshero-core'
-import { configureStore } from '../store'
-import { MyModule } from './mymodule'
-
-
+import { configureStore } from 'lib'
+import { HeroModule } from './hero'
+import { HomeModule } from './home'
 @Module({
   providers: [
-    MyModule
+    HomeModule,
+    HeroModule
   ],
   configureStore: configureStore
 })
 export class RootModule {}
 ```
-Yapılan bu işlemden sonra;
+![register module](/docs/register.png)
 
-kullanıcının görebileceği server side render edilen sayfa;
-> http://localhost:5000/mymodule
+# 🥳 lets open hero page yourlocalhost:3000/hero
 
-api isteklerinde kullanılabilecek
-> http://localhost:5000/api/mymodule
+![hero page](/docs/HeroPage.png)
 
-şeklinde rotalar aktif olur.
-#
+
+# 🥳 lets open hero api yourlocalhost:3000/api/hero
+
+![hero page](/docs/HeroApi.png)
+
 
 
