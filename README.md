@@ -67,7 +67,6 @@ import { reducer } from './reducer'
 export class HeroModule {}
 
 ```
-![hero module](https://github.com/erdalugur/jshero/blob/master/docs/HeroModule.png)
 
 # 💡 Root Module must be registered in order for the created module to be used in the application.
 
@@ -85,16 +84,10 @@ import { HomeModule } from './home'
 })
 export class RootModule {}
 ```
-![register module](/docs/register.png)
 
-# 🥳 lets open hero page yourlocalhost:3000/hero
+> lets open hero page localhost:3000/hero
 
-![hero page](/docs/HeroPage.png)
-
-
-# 🥳 lets open hero api yourlocalhost:3000/api/hero
-
-![hero page](/docs/HeroApi.png)
+> lets open hero api localhost:3000/api/hero
 
 
 
