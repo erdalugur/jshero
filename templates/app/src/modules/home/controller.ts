@@ -1,4 +1,4 @@
-import { Get, ViewHandler, Controller, Cache } from "jshero-core";
+import { Get, ViewHandler, Controller } from "jshero-core";
 import { HomeState } from "./model";
 
 @Controller()
@@ -12,9 +12,8 @@ export class HomeController {
     }
   }
 
-  @Cache('dogs', 60) // cached 1 min
   @Get('/dogs')
-  getDogsData() {
+  async getDogsData() {
     return fetch(process.env.JSHERO_DOGS_URL).then(x => x.json())
   }
 }
