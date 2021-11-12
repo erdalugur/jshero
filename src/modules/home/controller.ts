@@ -1,21 +1,18 @@
-import { Get, ViewHandler, Controller, Cache } from "jshero-core";
-import { PageService } from "services/pageService";
+import { Get, ViewHandler, Controller } from "jshero-core";
 import { HomeState } from "./model";
 @Controller()
 export class HomeController {
-  constructor(
-    private pageService: PageService
-  ){}
 
   @ViewHandler()
   @Get()
-  async handler () {
-    return this.pageService.getPageData<HomeState>('home')
+  async handler (): Promise<HomeState> {
+    return {
+      title: 'JsHero'
+    }
   }
 
-  @Cache('dogs', 60) // cached 1 min
   @Get('/dogs')
-  getDogsData() {
+  async getDogsData() {
     return fetch(process.env.JSHERO_DOGS_URL).then(x => x.json())
   }
 }
