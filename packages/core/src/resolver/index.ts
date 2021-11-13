@@ -1,5 +1,5 @@
 import META_KEYS from "jshero-constants";
-import { AppModule, RouteDefinition, MiddlewareFn, InjectMiddlewareType } from "../types";
+import { CombinedAppModule, RouteDefinition, MiddlewareFn, InjectMiddlewareType } from "../types";
 import { getInjectionsPerRequest, Injector } from "../decorators";
 import { cacheManager, WithOutputCache } from "../cache";
 import { InternalServerErrorException } from "../exceptions";
@@ -79,29 +79,20 @@ export function resolveRootModule (bootstrap: object) {
     return (Reflect.getMetadata(META_KEYS.APP_MODULE, module) || []) as T
   }
   
-  const { providers, configureStore } = getModule<{ providers: Function[], configureStore: Function }>(bootstrap)
-  
-  function getReducers (){
-    const reducers: Record<string, any> = {}
-    providers.forEach(x => {
-      const { reducer, name } = getModule<AppModule>(x)
-      reducers[name] = reducer
-    })
-    return reducers
-  }
-  
+  const { providers } = getModule<{ providers: Function[] }>(bootstrap)
+
   function getModules () {
-    const modules: AppModule[] = []
+    const modules: CombinedAppModule[] = []
     providers.forEach(x => {
-      modules.push(getModule<AppModule>(x))
+      const module = getModule<CombinedAppModule>(x)
+      module.cacheKey = `__${module.path}__${module.name}__`
+      modules.push(module)
     })
     return modules
   }
   return {
     providers,
     modules: getModules(),
-    reducers: getReducers(),
-    configureStore,
     resolveController
   }
 }

@@ -27,12 +27,12 @@ function incorrectFn () {
 }
 
 function createAppFn() {
-  let { name, projectRoot } = resolveProject(process.argv)
+  let { name, projectRoot, template } = resolveProject(process.argv)
   if(!name) {
     console.log('Project name is required')
     return
   }
-  createApp({projectRoot, name})
+  createApp({projectRoot, name, template})
 }
 
 function createModuleFn () {

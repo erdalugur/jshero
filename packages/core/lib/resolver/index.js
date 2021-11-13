@@ -136,27 +136,19 @@ function resolveRootModule(bootstrap) {
     function getModule(module) {
         return (Reflect.getMetadata(jshero_constants_1.default.APP_MODULE, module) || []);
     }
-    var _a = getModule(bootstrap), providers = _a.providers, configureStore = _a.configureStore;
-    function getReducers() {
-        var reducers = {};
-        providers.forEach(function (x) {
-            var _a = getModule(x), reducer = _a.reducer, name = _a.name;
-            reducers[name] = reducer;
-        });
-        return reducers;
-    }
+    var providers = getModule(bootstrap).providers;
     function getModules() {
         var modules = [];
         providers.forEach(function (x) {
-            modules.push(getModule(x));
+            var module = getModule(x);
+            module.cacheKey = "__" + module.path + "__" + module.name + "__";
+            modules.push(module);
         });
         return modules;
     }
     return {
         providers: providers,
         modules: getModules(),
-        reducers: getReducers(),
-        configureStore: configureStore,
         resolveController: resolveController
     };
 }

@@ -1,11 +1,15 @@
 import './polyfill'
 import { resolveRootModule } from '../resolver'
 import express, { Request, Response, NextFunction } from 'express'
-import { CreateAppOptions } from '../types'
+import { CreateAppOptions, HttpRequest, HttpResponse, HttpNextFunction, RootModuleProps } from '../types'
 import compression from 'compression'
 import { resolveApp } from './utils'
 import { errorLogger, sendError, requestContextMiddleware } from './middleware'
-import { createRenderer } from './renderer'
+import { renderFullPage } from './renderer'
+import { renderToString } from 'react-dom/server'
+import React from 'react'
+import { createApp } from '../main'
+
 
 const staticPath = resolveApp('build/browser')
 
@@ -19,23 +23,32 @@ export function createServer (options: CreateAppOptions) {
   const router = express.Router()
   
   function useMiddleware () {
-    const { modules, reducers, configureStore, resolveController } = resolveRootModule(options.bootstrap)
+    const { modules, resolveController } = resolveRootModule(options.bootstrap)
 
-    modules.forEach(({statusCode = 200 ,...x}) => {
+    modules.forEach((x, i) => {
       const { fn, resolvePrefix, resolveRoutes, withOutputCache, resolveMiddleware, injectedMiddleware } = resolveController(x.controller)
       const middlewares = resolveMiddleware()
       if (x.view) {
         const allMiddleware = [...middlewares, ...injectedMiddleware(true)]
-        router.get(x.path, allMiddleware, async (req: any, res: any, next: any) => {
+        router.get(x.path, allMiddleware, async (req: HttpRequest, res: HttpResponse, next: HttpNextFunction) => {
           try {
-            const cacheKey = `__${x.path}__${x.name}__`
-            const result = await withOutputCache(cacheKey, x.outputCache || 0, async () => {
-              const result = await fn<unknown>(req, res, next)
-              const store = configureStore({[x.name]: result }, reducers)
-              const { render } = createRenderer({ modules, store, url: req.url as string })
-              return render()
+            const render = function(data: any) {
+              const App = options.bootstrap as React.ComponentType<RootModuleProps>
+              const getInitialState = () => ({[x.name]: data})
+              modules[i].getInitialState = getInitialState
+              const html = renderToString(
+                <App initialState={getInitialState()} path={req.url}>
+                  {createApp(modules)}
+                </App>
+              )
+              return renderFullPage(html, getInitialState())
+            }
+            const page = await withOutputCache<string>(x.cacheKey, x.outputCache || 0, async () => {
+              const data = await fn<any>(req, res, next)
+              return render(data)
             })
-            res.send(result)
+            
+            res.send(page)
           } catch (error) {
             next(error)
           }
@@ -50,7 +63,7 @@ export function createServer (options: CreateAppOptions) {
         router[requestMethod](route, allMiddleware, async (req: Request, res: Response, next: NextFunction) => {
           try {
             const result = await fn(req, res, next, methodName)
-            res.status(statusCode).json(result)
+            res.status(200).json(result)
           } catch (error) {
             next(error)
           }

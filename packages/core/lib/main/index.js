@@ -28,13 +28,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApp = void 0;
 var react_1 = __importDefault(require("react"));
 var react_router_dom_1 = require("react-router-dom");
-var react_redux_1 = require("react-redux");
-function createApp(store, modules) {
-    return (react_1.default.createElement(react_redux_1.Provider, { store: store },
-        react_1.default.createElement(react_router_dom_1.Switch, null, modules.map(function (_a) {
-            var Component = _a.view, x = __rest(_a, ["view"]);
-            return (react_1.default.createElement(react_router_dom_1.Route, __assign({ key: x.path }, x),
-                react_1.default.createElement(Component, null)));
-        }))));
+function createApp(modules) {
+    var server = process.env['BROWSER'] ? false : true;
+    function getInitialState(x) {
+        var state = x.getInitialState();
+        return state && state[x.name] || {};
+    }
+    var render = function () { return (react_1.default.createElement(react_router_dom_1.Switch, null, modules.map(function (_a) {
+        var Component = _a.view, x = __rest(_a, ["view"]);
+        return (react_1.default.createElement(react_router_dom_1.Route, __assign({ key: x.path }, x),
+            react_1.default.createElement(Component, __assign({}, getInitialState(x)))));
+    }))); };
+    if (!server) {
+        return (react_1.default.createElement(react_router_dom_1.BrowserRouter, null, render()));
+    }
+    else {
+        return (react_1.default.createElement(react_router_dom_1.StaticRouter, null, render()));
+    }
 }
 exports.createApp = createApp;

@@ -35,17 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -67,6 +56,9 @@ var compression_1 = __importDefault(require("compression"));
 var utils_1 = require("./utils");
 var middleware_1 = require("./middleware");
 var renderer_1 = require("./renderer");
+var server_1 = require("react-dom/server");
+var react_1 = __importDefault(require("react"));
+var main_1 = require("../main");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
 function createServer(options) {
     var app = (0, express_1.default)();
@@ -75,38 +67,43 @@ function createServer(options) {
     var router = express_1.default.Router();
     function useMiddleware() {
         var _this = this;
-        var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, reducers = _a.reducers, configureStore = _a.configureStore, resolveController = _a.resolveController;
-        modules.forEach(function (_a) {
-            var _b = _a.statusCode, statusCode = _b === void 0 ? 200 : _b, x = __rest(_a, ["statusCode"]);
-            var _c = resolveController(x.controller), fn = _c.fn, resolvePrefix = _c.resolvePrefix, resolveRoutes = _c.resolveRoutes, withOutputCache = _c.withOutputCache, resolveMiddleware = _c.resolveMiddleware, injectedMiddleware = _c.injectedMiddleware;
+        var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, resolveController = _a.resolveController;
+        modules.forEach(function (x, i) {
+            var _a = resolveController(x.controller), fn = _a.fn, resolvePrefix = _a.resolvePrefix, resolveRoutes = _a.resolveRoutes, withOutputCache = _a.withOutputCache, resolveMiddleware = _a.resolveMiddleware, injectedMiddleware = _a.injectedMiddleware;
             var middlewares = resolveMiddleware();
             if (x.view) {
                 var allMiddleware = __spreadArray(__spreadArray([], middlewares, true), injectedMiddleware(true), true);
                 router.get(x.path, allMiddleware, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
-                    var cacheKey, result, error_1;
+                    var render_1, page, error_1;
                     var _this = this;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 2, , 3]);
-                                cacheKey = "__" + x.path + "__" + x.name + "__";
-                                return [4 /*yield*/, withOutputCache(cacheKey, x.outputCache || 0, function () { return __awaiter(_this, void 0, void 0, function () {
-                                        var result, store, render;
+                                render_1 = function (data) {
+                                    var App = options.bootstrap;
+                                    var getInitialState = function () {
                                         var _a;
-                                        return __generator(this, function (_b) {
-                                            switch (_b.label) {
+                                        return (_a = {}, _a[x.name] = data, _a);
+                                    };
+                                    modules[i].getInitialState = getInitialState;
+                                    var html = (0, server_1.renderToString)(react_1.default.createElement(App, { initialState: getInitialState(), path: req.url }, (0, main_1.createApp)(modules)));
+                                    return (0, renderer_1.renderFullPage)(html, getInitialState());
+                                };
+                                return [4 /*yield*/, withOutputCache(x.cacheKey, x.outputCache || 0, function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var data;
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
                                                 case 0: return [4 /*yield*/, fn(req, res, next)];
                                                 case 1:
-                                                    result = _b.sent();
-                                                    store = configureStore((_a = {}, _a[x.name] = result, _a), reducers);
-                                                    render = (0, renderer_1.createRenderer)({ modules: modules, store: store, url: req.url }).render;
-                                                    return [2 /*return*/, render()];
+                                                    data = _a.sent();
+                                                    return [2 /*return*/, render_1(data)];
                                             }
                                         });
                                     }); })];
                             case 1:
-                                result = _a.sent();
-                                res.send(result);
+                                page = _a.sent();
+                                res.send(page);
                                 return [3 /*break*/, 3];
                             case 2:
                                 error_1 = _a.sent();
@@ -133,7 +130,7 @@ function createServer(options) {
                                 return [4 /*yield*/, fn(req, res, next, methodName)];
                             case 1:
                                 result = _a.sent();
-                                res.status(statusCode).json(result);
+                                res.status(200).json(result);
                                 return [3 /*break*/, 3];
                             case 2:
                                 error_2 = _a.sent();

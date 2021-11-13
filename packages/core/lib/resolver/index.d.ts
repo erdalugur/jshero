@@ -1,4 +1,4 @@
-import { AppModule, RouteDefinition, MiddlewareFn } from "../types";
+import { CombinedAppModule, RouteDefinition, MiddlewareFn } from "../types";
 import { WithOutputCache } from "../cache";
 declare function resolveController(target: Object): {
     fn: {
@@ -16,9 +16,7 @@ declare function resolveController(target: Object): {
 };
 export declare function resolveRootModule(bootstrap: object): {
     providers: Function[];
-    modules: AppModule[];
-    reducers: Record<string, any>;
-    configureStore: Function;
+    modules: CombinedAppModule[];
     resolveController: typeof resolveController;
 };
 export {};

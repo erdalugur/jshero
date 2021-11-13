@@ -1,19 +1,34 @@
 import React from 'react'
-import { Switch, Route} from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { AnyAction, Store } from 'redux'
-import { AppModule } from '../types'
+import { Switch, Route, BrowserRouter, StaticRouter} from 'react-router-dom'
+import { CombinedAppModule } from '../types'
 
-export function createApp (store: Store<any, AnyAction>, modules: AppModule[]){
-  return (
-    <Provider store={store}>
-      <Switch>
-        {modules.map(({view: Component, ...x}) => (
-          <Route key={x.path} {...x}>
-            <Component />
-          </Route>
-        ))}
-      </Switch>
-    </Provider>
+export function createApp (modules: CombinedAppModule[]){
+  const server = process.env['BROWSER'] ? false : true
+ 
+  function getInitialState (x: CombinedAppModule) {
+    const state = x.getInitialState()
+    return state && state[x.name] || {} 
+  }
+  const render = () => (
+    <Switch>
+      {modules.map(({view: Component, ...x}) => (
+        <Route key={x.path} {...x}>
+          <Component {...getInitialState(x)}/>
+        </Route>
+      ))}
+    </Switch>
   )
+  if (!server) {
+    return (
+      <BrowserRouter>
+        {render()}
+      </BrowserRouter>
+    )
+  } else {
+    return (
+      <StaticRouter>
+        {render()}
+      </StaticRouter>
+    )
+  }
 }

@@ -10,12 +10,12 @@ module.exports = {
     const { pascalCaseName } = makeNames(name)
     return `import React from 'react'
 import { Meta } from 'jshero-core'
-import { useStyles } from './style'
+import { ${pascalCaseName}State } from './model'
+import './styles.css'
 
-export function View () {
-  const classes = useStyles()
+export function View (props: ${pascalCaseName}State) {
   return(
-    <div className={classes.container}>
+    <div className="container">
       <Meta>
         <title>${pascalCaseName}</title>
       </Meta>
@@ -27,8 +27,8 @@ export function View () {
   },
   controller (name) {
     const { pascalCaseName } = makeNames(name)
-    return `import { ViewHandler, Get, Controller } from "jshero-core"
-import { ${pascalCaseName}State } from "./model";
+    return `import { ViewHandler, Get, Controller } from 'jshero-core'
+import { ${pascalCaseName}State } from './model'
 
 @Controller()
 export class ${pascalCaseName}Controller {
@@ -46,31 +46,25 @@ export class ${pascalCaseName}Controller {
     return `import { Module } from 'jshero-core'
 import { View } from './view'
 import { ${pascalCaseName}Controller } from './controller'
-import { reducer } from './reducer'
 
 @Module({
   controller: ${pascalCaseName}Controller,
   name: '${lowerCaseName}' as const,
-  reducer: reducer,
   view: View,
   exact: true,
   path: '/${lowerCaseName}'
 })
 export class ${pascalCaseName}Module {}`
   },
-  style (){
-    return `import { createUseStyles } from 'react-jss'
-
-export const useStyles = createUseStyles({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100vh'
-  }
-})`
+  styles (){
+    return `.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}`
   },
   reducer(name) {
     const { pascalCaseName } = makeNames(name)

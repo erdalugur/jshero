@@ -16,7 +16,7 @@ function createModule ( { name}) {
 			return
 		}
 		fs.mkdirSync(module)
-		const fileNames = ['controller.ts', 'index.ts', 'model.ts','reducer.ts','style.ts', 'view.tsx']
+		const fileNames = ['controller.ts', 'index.ts', 'model.ts', 'styles.css', 'view.tsx']
 		fileNames.forEach(key => {
 			const action = key.split('.')[0]
 			fs.writeFileSync(`${module}/${key}`, templates[action](name))

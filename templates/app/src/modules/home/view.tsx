@@ -1,13 +1,11 @@
 import React from 'react'
 import { Meta } from 'jshero-core'
-import { useAppSelector } from 'lib'
-import { useStyles } from './style'
+import { HomeState } from './model'
+import './styles.css'
 
-export function View () {
-  const classes = useStyles()
-  const { title } = useAppSelector(x => x.home)
+export function View ({ title }: HomeState) {
   return(
-    <div className={classes.container}>
+    <div className="container">
       <Meta>
         <title>{title}</title>
       </Meta>

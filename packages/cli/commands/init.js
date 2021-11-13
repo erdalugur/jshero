@@ -4,13 +4,13 @@ const path = require('path')
 const { message, success, error, setPackageJson } = require('../utils');
 const downloadAndExtractRepo = require('../utils/download');
 
-function init ({ name, projectRoot }) {
+function init ({ name, projectRoot, template = 'app' }) {
   console.log()
   message('Project Template Creating...')
   if (!fs.existsSync(projectRoot)) {
     fs.mkdirSync(projectRoot)
 
-    downloadAndExtractRepo(projectRoot, {filePath: 'templates/app'}).then(x => {
+    downloadAndExtractRepo(projectRoot, {filePath: `templates/${template}`}).then(x => {
       setPackageJson(projectRoot, name).then(x => {
         console.log()
         success('Project Created Successfully...')
@@ -39,12 +39,6 @@ function init ({ name, projectRoot }) {
         console.log(e)
       })
     })
-
-    return
-    //extra.copySync(path.join(__dirname, '../templates/app'), projectRoot, { recursive: true, overwrite: true, dereference: true })
-
-    
-    
 
   } else {
     error('error: there is something in the folder to install')

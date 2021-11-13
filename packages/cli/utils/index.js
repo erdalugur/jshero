@@ -39,9 +39,11 @@ module.exports = {
     }
     let name = process.argv[3].trim()
     let projectRoot = path.resolve(name);
+    let template = process.argv.length > 4 && process.argv[5].trim() || 'app'
     return {
       name,
-      projectRoot
+      projectRoot,
+      template
     }
   },
   warning (message) {

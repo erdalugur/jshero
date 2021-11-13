@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "redux_demo",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Uğur Erdal",
@@ -11,10 +11,9 @@
     "start": "node build/server.js"
   },
   "dependencies": {
-    "jshero-core": "^1.6.0",
+    "jshero-core": "^1.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-jss": "^10.8.0",
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
     "redux": "^4.1.1",

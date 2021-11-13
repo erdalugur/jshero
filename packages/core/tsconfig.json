@@ -17,7 +17,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "lib": [ "es6", "dom" ],
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true
   },
   "include": ["src"],

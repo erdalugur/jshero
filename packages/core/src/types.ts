@@ -48,14 +48,16 @@ export interface AppModule {
   exact?: boolean
   path: string
   name: string,
-  reducer: Function
   outputCache?: number
-  statusCode?: HttpStatusCode
+}
+
+export interface CombinedAppModule extends AppModule {
+  getInitialState: () => any
+  cacheKey: string
 }
 
 export interface BaseModule {
   providers: Function[]
-  configureStore: Function
 }
 export interface CreateAppOptions {
   bootstrap: object
@@ -82,4 +84,8 @@ export interface HttpContext {
   req: HttpRequest
   res: HttpResponse
   next: HttpNextFunction
+}
+export interface RootModuleProps {
+  initialState: any
+  path: string
 }
