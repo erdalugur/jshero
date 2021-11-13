@@ -21,6 +21,9 @@ jshero -m module_name:
 ```
 jshero -i app
 
+// redux template
+jshero -i app -t redux
+
 cd app
 ```
 
@@ -45,6 +48,9 @@ jshero has a modular architecture. So let's learn to create module.
 # Create a module with cli command
 ```
 jshero -m hero 
+
+// with redux template
+jshero -m hetro -t redux
 ```
 
 

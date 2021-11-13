@@ -3,13 +3,13 @@ import { Meta } from 'jshero-core'
 import { HomeState } from './model'
 import './styles.css'
 
-export function View ({ title }: HomeState) {
+export function View (props: HomeState) {
   return(
     <div className="container">
       <Meta>
-        <title>{title}</title>
+        <title>{props.title}</title>
       </Meta>
-      <h1>{title}</h1>
+      <h1>{props.title}</h1>
       <p>Hoş Geldiniz!</p>
     </div>
   )
