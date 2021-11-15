@@ -11,7 +11,7 @@ export function View () {
         <title>{title}</title>
       </Meta>
       <h1>{title}</h1>
-      <p>Hoş Geldiniz!</p>
+      <p>Welcome!</p>
     </div>
   )
 }

@@ -1,1 +1,1 @@
-export declare function renderFullPage(markup: string, state: any): string;
+export declare function renderFullPage(markup: string, state: any, module: string): string;

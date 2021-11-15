@@ -1,2 +1,6 @@
-import { CombinedAppModule } from '../types';
-export declare function createApp(modules: CombinedAppModule[]): JSX.Element;
+/// <reference types="react" />
+import { AppModule } from '../types';
+export declare function Common({ modules, pageState }: {
+    modules: AppModule[];
+    pageState: any;
+}): JSX.Element;

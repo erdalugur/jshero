@@ -1,4 +1,5 @@
 import { Express, NextFunction, Response, Request } from 'express';
+import React from 'react';
 export declare enum HttpMethods {
     GET = "get",
     POST = "post",
@@ -81,4 +82,5 @@ export interface HttpContext {
 export interface RootModuleProps {
     initialState: any;
     path: string;
+    App: React.ElementType;
 }

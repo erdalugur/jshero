@@ -10,14 +10,13 @@ import { Provider } from 'react-redux'
   ]
 })
 export class RootModule extends React.Component<RootModuleProps, any> {
-  render () {
-    const store = configureStore(this.props.initialState)
+  render () { 
+    const { App, initialState } = this.props
+    const store = configureStore(initialState)
     return (
-      <div suppressHydrationWarning={true}>
-        <Provider store={store}>
-          {this.props.children}
-        </Provider>
-      </div>
+      <Provider store={store}>
+        <App />
+      </Provider>
     )
   }
 }

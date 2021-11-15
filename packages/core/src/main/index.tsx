@@ -1,34 +1,15 @@
 import React from 'react'
-import { Switch, Route, BrowserRouter, StaticRouter} from 'react-router-dom'
-import { CombinedAppModule } from '../types'
+import { Switch, Route } from 'react-router-dom'
+import { AppModule } from '../types'
 
-export function createApp (modules: CombinedAppModule[]){
-  const server = process.env['BROWSER'] ? false : true
- 
-  function getInitialState (x: CombinedAppModule) {
-    const state = x.getInitialState()
-    return state && state[x.name] || {} 
-  }
-  const render = () => (
+export function Common ({ modules, pageState }: { modules: AppModule[], pageState: any }) {
+  return (
     <Switch>
       {modules.map(({view: Component, ...x}) => (
         <Route key={x.path} {...x}>
-          <Component {...getInitialState(x)}/>
+          <Component {...pageState}/>
         </Route>
       ))}
     </Switch>
   )
-  if (!server) {
-    return (
-      <BrowserRouter>
-        {render()}
-      </BrowserRouter>
-    )
-  } else {
-    return (
-      <StaticRouter>
-        {render()}
-      </StaticRouter>
-    )
-  }
 }

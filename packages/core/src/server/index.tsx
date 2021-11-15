@@ -8,7 +8,8 @@ import { errorLogger, sendError, requestContextMiddleware } from './middleware'
 import { renderFullPage } from './renderer'
 import { renderToString } from 'react-dom/server'
 import React from 'react'
-import { createApp } from '../main'
+import { Common } from '../main'
+import { StaticRouter } from 'react-router'
 
 
 const staticPath = resolveApp('build/browser')
@@ -32,22 +33,25 @@ export function createServer (options: CreateAppOptions) {
         const allMiddleware = [...middlewares, ...injectedMiddleware(true)]
         router.get(x.path, allMiddleware, async (req: HttpRequest, res: HttpResponse, next: HttpNextFunction) => {
           try {
-            const render = function(data: any) {
-              const App = options.bootstrap as React.ComponentType<RootModuleProps>
-              const getInitialState = () => ({[x.name]: data})
-              modules[i].getInitialState = getInitialState
-              const html = renderToString(
-                <App initialState={getInitialState()} path={req.url}>
-                  {createApp(modules)}
-                </App>
-              )
-              return renderFullPage(html, getInitialState())
-            }
-            const page = await withOutputCache<string>(x.cacheKey, x.outputCache || 0, async () => {
+            const key: string = `_${x.path}_${x.name}_key`
+            const page: string = await withOutputCache(key, x.outputCache, async () => {
+              const render = function(data: any) {
+                const Main = options.bootstrap as React.ComponentType<RootModuleProps>
+                const state = {[x.name]: data}
+                function App () {
+                  return (
+                    <StaticRouter location={req.url}>
+                      <Common modules={modules} pageState={data}/>
+                    </StaticRouter>
+                  )
+                }
+                const html = renderToString(<Main initialState={state} path={req.url} App={App} />)
+                return renderFullPage(html, state, x.name)
+              }
               const data = await fn<any>(req, res, next)
               return render(data)
             })
-            
+            // send page html
             res.send(page)
           } catch (error) {
             next(error)

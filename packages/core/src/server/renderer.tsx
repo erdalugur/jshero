@@ -4,7 +4,7 @@ import { resolveApp, readHtml } from './utils'
 const staticPath = resolveApp('build/browser')
 const template = readHtml(staticPath)
 
-export function renderFullPage (markup: string, state: any) {
+export function renderFullPage (markup: string, state: any, module: string) {
   const helmet = Helmet.renderStatic();
   const regexp = / data-react-helmet="true"/g
   const html = helmet.htmlAttributes.toString().replace(regexp, ''),
@@ -27,6 +27,7 @@ export function renderFullPage (markup: string, state: any) {
       /</g,
       '\\u003c'
     )}
+    window.__INITIAL_MODULE__ = '${module}'
   </script>
   `)
   .replace('</body>', `${script}</body>`)
