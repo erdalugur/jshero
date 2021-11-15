@@ -20,7 +20,7 @@ export function View (props: ${pascalCaseName}State) {
         <title>${pascalCaseName}</title>
       </Meta>
       <h1>${pascalCaseName}</h1>
-      <p>Hoş Geldiniz!</p>
+      <p>Welcome!</p>
     </div>
   )
 }`
