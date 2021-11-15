@@ -1,16 +1,16 @@
 import React from 'react'
 import { Meta } from '../../../../../packages/core/lib'
-import { HomeState } from './model'
+import { AboutState } from './model'
 import './styles.css'
 
-export function View (props: HomeState) {
-  console.log("props", props)
+export function View ({ title }: AboutState) {
+  console.log("About", title)
   return(
     <div className="container">
       <Meta>
-        <title>{props.title}</title>
+        <title>{title}</title>
       </Meta>
-      <h1>{props.title}</h1>
+      <h1>{title}</h1>
       <p>Hoş Geldiniz!</p>
     </div>
   )
