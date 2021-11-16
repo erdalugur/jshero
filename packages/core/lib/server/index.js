@@ -90,12 +90,13 @@ function createServer(options) {
                                                     render = function (data) {
                                                         var _a;
                                                         var Main = options.bootstrap;
+                                                        console.log(options.bootstrap['getInitialProps']);
                                                         var state = (_a = {}, _a[x.name] = data, _a);
                                                         function App() {
                                                             return (react_1.default.createElement(react_router_1.StaticRouter, { location: req.url },
                                                                 react_1.default.createElement(main_1.Common, { modules: modules, pageState: data })));
                                                         }
-                                                        var html = (0, server_1.renderToString)(react_1.default.createElement(Main, { initialState: state, path: req.url, App: App }));
+                                                        var html = (0, server_1.renderToString)(react_1.default.createElement(Main, { module: x.name, initialState: state, path: req.url, App: App }));
                                                         return (0, renderer_1.renderFullPage)(html, state, x.name);
                                                     };
                                                     return [4 /*yield*/, fn(req, res, next)];

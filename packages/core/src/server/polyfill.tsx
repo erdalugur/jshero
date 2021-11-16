@@ -1,6 +1,8 @@
 import 'reflect-metadata'
 import fetch from 'isomorphic-fetch'
+import React from 'react'
 
+React.useLayoutEffect = React.useEffect
 
 
 if (!process.env.BROWSER) {

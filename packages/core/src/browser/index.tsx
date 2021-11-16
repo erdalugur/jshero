@@ -22,6 +22,7 @@ export function createBrowserApp (options: CreateAppOptions) {
   }
   hydrate(
     <Main 
+      module={page}
       path={window.location.pathname} 
       initialState={state} 
       App={App} 

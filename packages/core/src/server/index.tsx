@@ -37,6 +37,7 @@ export function createServer (options: CreateAppOptions) {
             const page: string = await withOutputCache(key, x.outputCache, async () => {
               const render = function(data: any) {
                 const Main = options.bootstrap as React.ComponentType<RootModuleProps>
+                console.log(options.bootstrap['getInitialProps'])
                 const state = {[x.name]: data}
                 function App () {
                   return (
@@ -45,7 +46,7 @@ export function createServer (options: CreateAppOptions) {
                     </StaticRouter>
                   )
                 }
-                const html = renderToString(<Main initialState={state} path={req.url} App={App} />)
+                const html = renderToString(<Main module={x.name} initialState={state} path={req.url} App={App} />)
                 return renderFullPage(html, state, x.name)
               }
               const data = await fn<any>(req, res, next)

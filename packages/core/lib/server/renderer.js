@@ -11,7 +11,8 @@ function renderFullPage(markup, state, module) {
     var html = helmet.htmlAttributes.toString().replace(regexp, ''), head = [
         helmet.title.toString().replace(regexp, ''),
         helmet.meta.toString().replace(regexp, ''),
-        helmet.link.toString().replace(regexp, '')
+        helmet.style.toString().replace(regexp, ''),
+        helmet.link.toString().replace(regexp, ''),
     ].join(''), body = helmet.bodyAttributes.toString().replace(regexp, ''), script = helmet.script.toString().replace(regexp, '');
     return template
         .replace('<html', "<html " + html)

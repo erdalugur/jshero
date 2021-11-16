@@ -14,3 +14,4 @@ __exportStar(require("./no-ssr"), exports);
 __exportStar(require("./head"), exports);
 __exportStar(require("./meta"), exports);
 __exportStar(require("./script"), exports);
+__exportStar(require("./style"), exports);

@@ -82,5 +82,6 @@ export interface HttpContext {
 export interface RootModuleProps {
     initialState: any;
     path: string;
-    App: React.ElementType;
+    App: React.ElementType<any>;
+    module: string;
 }
