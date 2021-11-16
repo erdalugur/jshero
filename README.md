@@ -25,7 +25,7 @@ cd app
 
 > <p style="font-weight: bold;">Modules</p>
 
-- jshero has a modular architecture. So let's learn to create module.
+jshero has a modular architecture. So let's learn to create module.
 
 > <p style="font-weight: bold;">Create a module with cli command</p> 
 ```
