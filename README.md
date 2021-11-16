@@ -7,14 +7,6 @@
 ```
 npm install --global jshero-cli
 ```
-> <p style="font-weight: bold;">Currently available cli commands</p>
-```
-// app generate command
-jshero -i app
-
-// module generate command
-jshero -m module_name: 
-```
 
 > <p style="font-weight: bold;">Create application with project template</p>
 
@@ -31,24 +23,6 @@ jshero -i app -t material-ui
 cd app
 ```
 
-> <p style="font-weight: bold;">Run as development mode</p>
-
-```
-npm run dev
-```
-
-> <p style="font-weight: bold;">Run as prodution mode</p>
-
-```
-npm run start
-```
-
-> <p style="font-weight: bold;">Create a production build</p>
-
-```
-npm run build
-```
-
 > <p style="font-weight: bold;">Modules</p>
 
 - jshero has a modular architecture. So let's learn to create module.
@@ -59,14 +33,13 @@ npm run build
 jshero -m hero 
 
 // with redux template
-jshero -m hetro -t redux
+jshero -m hero -t redux
 ```
 
 ```js
 import { Module } from 'jshero-core'
 import { View } from './view'
 import { HeroController } from './controller'
-import { reducer } from './reducer'
 
 @Module({
   controller: HeroController,
@@ -93,6 +66,24 @@ import { HomeModule } from './home'
   ]
 })
 export class RootModule {}
+```
+
+> <p style="font-weight: bold;">Run as development mode</p>
+
+```
+npm run dev
+```
+
+> <p style="font-weight: bold;">Run as prodution mode</p>
+
+```
+npm run start
+```
+
+> <p style="font-weight: bold;">Create a production build</p>
+
+```
+npm run build
 ```
 
 > lets open hero page
