@@ -37,7 +37,6 @@ export function createServer (options: CreateAppOptions) {
             const page: string = await withOutputCache(key, x.outputCache, async () => {
               const render = function(data: any) {
                 const Main = options.bootstrap as React.ComponentType<RootModuleProps>
-                console.log(options.bootstrap['getInitialProps'])
                 const state = {[x.name]: data}
                 function App () {
                   return (

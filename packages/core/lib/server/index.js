@@ -90,7 +90,6 @@ function createServer(options) {
                                                     render = function (data) {
                                                         var _a;
                                                         var Main = options.bootstrap;
-                                                        console.log(options.bootstrap['getInitialProps']);
                                                         var state = (_a = {}, _a[x.name] = data, _a);
                                                         function App() {
                                                             return (react_1.default.createElement(react_router_1.StaticRouter, { location: req.url },
