@@ -19,6 +19,6 @@ function createBrowserApp(options) {
             react_1.default.createElement(react_router_dom_1.BrowserRouter, null,
                 react_1.default.createElement(main_1.Common, { modules: modules, pageState: state[page] }))));
     }
-    (0, react_dom_1.hydrate)(react_1.default.createElement(Main, { module: page, path: window.location.pathname, initialState: state, App: App }), document.querySelector('#root'));
+    (0, react_dom_1.render)(react_1.default.createElement(Main, { module: page, path: window.location.pathname, initialState: state, App: App }), document.querySelector('#root'));
 }
 exports.createBrowserApp = createBrowserApp;

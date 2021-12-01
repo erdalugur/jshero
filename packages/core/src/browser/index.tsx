@@ -1,6 +1,6 @@
 import { resolveRootModule } from '../resolver'
 import React from 'react'
-import { hydrate } from 'react-dom'
+import { hydrate, render } from 'react-dom'
 import { Common } from '../main'
 import { CreateAppOptions, RootModuleProps } from '../types'
 import { BrowserRouter } from 'react-router-dom'
@@ -20,7 +20,7 @@ export function createBrowserApp (options: CreateAppOptions) {
       </div>
     )
   }
-  hydrate(
+  render(
     <Main 
       module={page}
       path={window.location.pathname} 
