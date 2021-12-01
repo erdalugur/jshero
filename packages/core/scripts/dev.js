@@ -16,7 +16,7 @@ function watch () {
   let scriptPath = require.resolve('./watch')
   nodemon({
     watch: ["src"],
-    ext: "ts,js,tsx,css,js",
+    ext: "ts,js,tsx,css,scss,js",
     ignore: ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
     exec:  `node ${scriptPath}`,
     quiet: true

@@ -6,7 +6,6 @@ const paths = require('./paths')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-
 /**
  * 
  * @param {'development' | 'production'} mode 
@@ -19,7 +18,7 @@ function configFactory (mode = 'development', target = 'node') {
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1))
   const isServer = target === 'node'
 
-  function webpackPlugings () {
+  function webpackPlugins () {
     const items = []
     if (!isServer) {
       items.push(
@@ -46,24 +45,34 @@ function configFactory (mode = 'development', target = 'node') {
     )
     return items
   }
+
+  function resolveStyleLoader () {
+    return {
+      test: /\.(sa|sc|c)ss$/,
+      use: [
+        isServer ? 'isomorphic-style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: { 
+            url: false,
+            // modules: {
+            //   localIdentName: "[name]__[local]___[hash:base64:5]",
+            // },
+            sourceMap: !isProduction,
+          }
+        },
+        'sass-loader',
+      ]
+    }
+  }
+
   const config = {
     mode: mode,
     target: isServer ? 'node' : 'web',
     entry: isServer ? paths.appServerJs: paths.appIndexJs,
     module: {
       rules: [
-        {
-          test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader, // instead of style-loader
-            //'style-loader',
-            {
-              loader: 'css-loader',
-              options: { url: false }
-            }
-            //'sass-loader',
-          ]
-        },
+        resolveStyleLoader(),
         {
           test: /\.tsx?$/,
           use: 'ts-loader',
@@ -75,7 +84,7 @@ function configFactory (mode = 'development', target = 'node') {
       extensions: ['.tsx', '.ts', '.js', '.mjs'],
       modules: ["node_modules", paths.appNodeModules, paths.appSrc]
     },
-    plugins: webpackPlugings(),
+    plugins: webpackPlugins(),
     devtool: !isProduction ? 'source-map': false,
     externals: isServer && [nodeExternals()] || [],
     output: {
