@@ -13,5 +13,9 @@ if (!process.env.BROWSER) {
         __INITIAL_STATE__: {}
     };
     global.fetch = isomorphic_fetch_1.default;
-    global.document = {};
+    global.document = {
+        querySelectorAll: function () { },
+        querySelector: function () { },
+        getElementById: function () { }
+    };
 }

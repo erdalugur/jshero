@@ -11,7 +11,11 @@ if (!process.env.BROWSER) {
     __INITIAL_STATE__: {}
   };
   global.fetch = fetch;
-  (global as any).document = { };
+  (global as any).document = { 
+    querySelectorAll: function () {},
+    querySelector: function () {},
+    getElementById: function () {}
+  };
 }
 
 
