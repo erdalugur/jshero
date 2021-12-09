@@ -1,35 +1,44 @@
-import { Head, Module, RootModuleProps } from 'jshero-core'
+import { Module, InitialRenderProps } from 'jshero-core'
 import React from 'react'
 import { HomeModule } from './home'
-import { createTheme, ThemeProvider, ServerStyleSheets } from '@material-ui/core/styles'
+import { ThemeProvider, ServerStyleSheets } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
-
-const theme = createTheme({ });
-
-const sheets = new ServerStyleSheets()
-
+import { theme } from 'lib'
 @Module({
   providers: [
     HomeModule
   ]
 })
-export class RootModule extends React.Component<RootModuleProps, any> {
-  render () {
-    const { App } = this.props
-    const Main = () => sheets.collect(
+export class RootModule extends React.Component<InitialRenderProps, any> {
+  static getInitialProps(ctx: InitialRenderProps) {
+    const sheets = new ServerStyleSheets()
+    const { App, initialState, render } = ctx
+    const initialProps = render(() => sheets.collect(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <App />
-      </ThemeProvider>,
-    )
-    const css = sheets.toString()
-    return (
-      <React.Fragment>
-        <Head>
-          <style type="text/css" id="jss-server-side">{`${css}`}</style>
-        </Head>
-        <Main />
-      </React.Fragment>
+      </ThemeProvider>
+    ))
+    return {
+      ...initialProps,
+      css: sheets.toString(),
+      initialState
+    }
+  }
+  componentDidMount() {
+    const jssStyles = document.querySelector('#server-side-styles');
+    if (jssStyles) {
+      jssStyles?.parentElement?.removeChild(jssStyles);
+    }
+  }
+  
+  render () {
+    const { App } = this.props
+    return(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     )
   }
 }

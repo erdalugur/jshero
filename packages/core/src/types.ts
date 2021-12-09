@@ -88,7 +88,16 @@ export interface HttpContext {
 }
 export interface RootModuleProps {
   initialState: any
-  path: string
   App: React.ElementType<any>
-  module: string
+}
+
+export interface RenderResult { html: string, css?: string, initialState: any }
+export type InitialRenderProps = {
+  App: React.ComponentType<any>,
+  render: (App: any) => RenderResult
+  initialState: any
+}
+
+export class RootModuleType {
+  getInitialProps?: (ctx: InitialRenderProps) => Promise<RenderResult>
 }

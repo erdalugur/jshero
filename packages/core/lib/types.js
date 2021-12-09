@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpStatusCode = exports.HttpMethods = void 0;
+exports.RootModuleType = exports.HttpStatusCode = exports.HttpMethods = void 0;
 var HttpMethods;
 (function (HttpMethods) {
     HttpMethods["GET"] = "get";
@@ -19,3 +19,9 @@ var HttpStatusCode;
     HttpStatusCode[HttpStatusCode["NotFound"] = 404] = "NotFound";
     HttpStatusCode[HttpStatusCode["InternalServer"] = 500] = "InternalServer";
 })(HttpStatusCode = exports.HttpStatusCode || (exports.HttpStatusCode = {}));
+var RootModuleType = /** @class */ (function () {
+    function RootModuleType() {
+    }
+    return RootModuleType;
+}());
+exports.RootModuleType = RootModuleType;

@@ -9,13 +9,6 @@ export function createBrowserApp (options: CreateAppOptions) {
   const Main = options.bootstrap as React.ComponentType<RootModuleProps>
   const state = window['__INITIAL_STATE__'] || {}
   const page = (window['__INITIAL_MODULE__'] || '') as string
-
-  render(
-    <Main 
-      module={page}
-      path={window.location.pathname} 
-      initialState={state} 
-      App={() => <Common modules={modules} pageState={state[page]} url={''}/>} 
-    />, 
-    document.querySelector('#root'))
+  const App = () => <Common modules={modules} pageState={state[page]} url={''} />  
+  render(<Main App={App} initialState={state}/>,document.querySelector('#root'))
 }

@@ -56,10 +56,6 @@ var compression_1 = __importDefault(require("compression"));
 var utils_1 = require("./utils");
 var middleware_1 = require("./middleware");
 var renderer_1 = require("./renderer");
-var server_1 = require("react-dom/server");
-var react_1 = __importDefault(require("react"));
-var main_1 = require("../main");
-var react_router_1 = require("react-router");
 var staticPath = (0, utils_1.resolveApp)('build/browser');
 function createServer(options) {
     var app = (0, express_1.default)();
@@ -68,55 +64,32 @@ function createServer(options) {
     var router = express_1.default.Router();
     function useMiddleware() {
         var _this = this;
-        var _a = (0, resolver_1.resolveRootModule)(options.bootstrap), modules = _a.modules, resolveController = _a.resolveController;
+        var bootstrap = options.bootstrap;
+        var _a = (0, resolver_1.resolveRootModule)(bootstrap), modules = _a.modules, resolveController = _a.resolveController;
         modules.forEach(function (x, i) {
             var _a = resolveController(x.controller), fn = _a.fn, resolvePrefix = _a.resolvePrefix, resolveRoutes = _a.resolveRoutes, withOutputCache = _a.withOutputCache, resolveMiddleware = _a.resolveMiddleware, injectedMiddleware = _a.injectedMiddleware;
             var middlewares = resolveMiddleware();
             if (x.view) {
                 var allMiddleware = __spreadArray(__spreadArray([], middlewares, true), injectedMiddleware(true), true);
                 router.get(x.path, allMiddleware, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
-                    var key, page, error_1;
-                    var _this = this;
+                    var data, result, error_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
-                                _a.trys.push([0, 2, , 3]);
-                                key = "_" + x.path + "_" + x.name + "_key";
-                                return [4 /*yield*/, withOutputCache(key, x.outputCache, function () { return __awaiter(_this, void 0, void 0, function () {
-                                        var render, data;
-                                        return __generator(this, function (_a) {
-                                            switch (_a.label) {
-                                                case 0:
-                                                    render = function (data) {
-                                                        var _a;
-                                                        var Main = options.bootstrap;
-                                                        var state = (_a = {}, _a[x.name] = data, _a);
-                                                        function App() {
-                                                            return (react_1.default.createElement(react_router_1.StaticRouter, { location: req.url },
-                                                                react_1.default.createElement(main_1.Common, { modules: modules, pageState: data })));
-                                                        }
-                                                        var html = (0, server_1.renderToString)(react_1.default.createElement(Main, { module: x.name, initialState: state, path: req.url, App: App }));
-                                                        return (0, renderer_1.renderFullPage)(html, state, x.name);
-                                                    };
-                                                    return [4 /*yield*/, fn(req, res, next)];
-                                                case 1:
-                                                    data = _a.sent();
-                                                    return [2 /*return*/, render(data)];
-                                            }
-                                        });
-                                    }); })
-                                    // send page html
-                                ];
+                                _a.trys.push([0, 3, , 4]);
+                                return [4 /*yield*/, fn(req, res, next)];
                             case 1:
-                                page = _a.sent();
-                                // send page html
-                                res.send(page);
-                                return [3 /*break*/, 3];
+                                data = _a.sent();
+                                return [4 /*yield*/, (0, renderer_1.renderModule)({ module: x, bootstrap: bootstrap, modules: modules, data: data })];
                             case 2:
+                                result = _a.sent();
+                                res.send(result);
+                                return [3 /*break*/, 4];
+                            case 3:
                                 error_1 = _a.sent();
                                 next(error_1);
-                                return [3 /*break*/, 3];
-                            case 3: return [2 /*return*/];
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
                         }
                     });
                 }); });

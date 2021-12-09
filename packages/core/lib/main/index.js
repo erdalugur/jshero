@@ -29,11 +29,15 @@ exports.Common = void 0;
 var react_1 = __importDefault(require("react"));
 var react_router_dom_1 = require("react-router-dom");
 function Common(_a) {
-    var modules = _a.modules, pageState = _a.pageState;
-    return (react_1.default.createElement(react_router_dom_1.Switch, null, modules.map(function (_a) {
-        var Component = _a.view, x = __rest(_a, ["view"]);
-        return (react_1.default.createElement(react_router_dom_1.Route, __assign({ key: x.path }, x),
-            react_1.default.createElement(Component, __assign({}, pageState))));
-    })));
+    var modules = _a.modules, pageState = _a.pageState, url = _a.url;
+    function renderModules() {
+        return (react_1.default.createElement(react_router_dom_1.Switch, null, modules.map(function (_a) {
+            var Component = _a.view, x = __rest(_a, ["view"]);
+            return (react_1.default.createElement(react_router_dom_1.Route, __assign({ key: x.path }, x),
+                react_1.default.createElement(Component, __assign({}, pageState))));
+        })));
+    }
+    var RouterComponent = (process.env['BROWSER'] ? react_router_dom_1.BrowserRouter : react_router_dom_1.StaticRouter);
+    return (react_1.default.createElement(RouterComponent, { location: url }, renderModules()));
 }
 exports.Common = Common;

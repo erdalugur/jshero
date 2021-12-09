@@ -1,14 +1,11 @@
 import './polyfill'
 import { resolveRootModule } from '../resolver'
 import express, { Request, Response, NextFunction } from 'express'
-import { CreateAppOptions, HttpRequest, HttpResponse, HttpNextFunction, RootModuleProps, CombinedAppModule } from '../types'
+import { CreateAppOptions, HttpRequest, HttpResponse, HttpNextFunction, RootModuleType } from '../types'
 import compression from 'compression'
 import { resolveApp } from './utils'
 import { errorLogger, sendError, requestContextMiddleware } from './middleware'
-import { renderFullPage } from './renderer'
-import { renderToString } from 'react-dom/server'
-import React from 'react'
-import { Common } from '../main'
+import { renderModule } from './renderer'
 
 const staticPath = resolveApp('build/browser')
 
@@ -22,8 +19,8 @@ export function createServer (options: CreateAppOptions) {
   const router = express.Router()
   
   function useMiddleware () {
-    const Main = options.bootstrap as React.ComponentType<RootModuleProps>
-    const { modules, resolveController } = resolveRootModule(Main)
+    const bootstrap = options.bootstrap as RootModuleType
+    const { modules, resolveController } = resolveRootModule(bootstrap)
 
     modules.forEach((x, i) => {
       const { fn, resolvePrefix, resolveRoutes, withOutputCache, resolveMiddleware, injectedMiddleware } = resolveController(x.controller)
@@ -32,18 +29,9 @@ export function createServer (options: CreateAppOptions) {
         const allMiddleware = [...middlewares, ...injectedMiddleware(true)]
         router.get(x.path, allMiddleware, async (req: HttpRequest, res: HttpResponse, next: HttpNextFunction) => {
           try {
-            const key: string = `_${x.path}_${x.name}_key`
-            const page: string = await withOutputCache(key, x.outputCache, async () => {
-              const render = function(data: any) {
-                const state = {[x.name]: data}
-                const App = () => <Common modules={modules} pageState={data} url={req.url}/>
-                const html = renderToString(<Main module={x.name} initialState={state} path={req.url} App={App} />)
-                return renderFullPage(html, state, x.name)
-              }
-              const data = await fn<any>(req, res, next)
-              return render(data)
-            })
-            res.send(page)
+            const data = await fn<any>(req, res, next)
+            const result = await renderModule({ module: x, bootstrap, modules, data })
+            res.send(result)
           } catch (error) {
             next(error)
           }
