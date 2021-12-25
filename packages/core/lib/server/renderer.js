@@ -84,7 +84,7 @@ function renderModule(_a) {
                             .replace('</head>', head + "</head>")
                             .replace('</head>', css ? "<style type=\"text/css\" id=\"server-side-styles\">" + css + "</style></head>" : '</head>')
                             .replace('<body', "<body " + body)
-                            .replace('<div id="root"></div>', "<div id=\"root\">" + html + "</div>\n  <script>\n    window.__INITIAL_STATE__ = " + JSON.stringify(state).replace(/</g, '\\u003c') + "\n    window.__INITIAL_MODULE__ = '" + module.name + "'\n  </script>\n  ")
+                            .replace('<div id="root"></div>', "<div id=\"root\">" + html + "</div>\n  <script type=\"application/json\" id=\"__JSHERO_DATA__\">\n  " + JSON.stringify({ props: state, module: module.name }).replace(/</g, '\\u003c') + "\n  </script>\n  \n  ")
                             .replace('</body>', script + "</body>")];
             }
         });

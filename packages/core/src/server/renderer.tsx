@@ -45,13 +45,13 @@ export async function renderModule ({ module, modules, data, bootstrap }:RenderP
   .replace('</head>', css ? `<style type="text/css" id="server-side-styles">${css}</style></head>` : '</head>')
   .replace('<body', `<body ${body}`)
   .replace('<div id="root"></div>', `<div id="root">${html}</div>
-  <script>
-    window.__INITIAL_STATE__ = ${JSON.stringify(state).replace(
-      /</g,
-      '\\u003c'
-    )}
-    window.__INITIAL_MODULE__ = '${module.name}'
+  <script type="application/json" id="__JSHERO_DATA__">
+  ${JSON.stringify({ props: state, module: module.name }).replace(
+    /</g,
+    '\\u003c'
+  )}
   </script>
+  
   `)
   .replace('</body>', `${script}</body>`)
 }

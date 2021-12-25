@@ -9,11 +9,11 @@ var react_1 = __importDefault(require("react"));
 var react_dom_1 = require("react-dom");
 var main_1 = require("../main");
 function createBrowserApp(options) {
+    var _a;
     var modules = (0, resolver_1.resolveRootModule)(options.bootstrap).modules;
     var Main = options.bootstrap;
-    var state = window['__INITIAL_STATE__'] || {};
-    var page = (window['__INITIAL_MODULE__'] || '');
-    var App = function () { return react_1.default.createElement(main_1.Common, { modules: modules, pageState: state[page], url: '' }); };
-    (0, react_dom_1.render)(react_1.default.createElement(Main, { App: App, initialState: state }), document.querySelector('#root'));
+    var _b = (JSON.parse((_a = document.querySelector('#__JSHERO_DATA__')) === null || _a === void 0 ? void 0 : _a.textContent) || { module: '', props: {} }), props = _b.props, module = _b.module;
+    var App = function () { return react_1.default.createElement(main_1.Common, { modules: modules, pageState: props[module], url: '' }); };
+    (0, react_dom_1.hydrate)(react_1.default.createElement(Main, { App: App, initialState: props }), document.querySelector('#root'));
 }
 exports.createBrowserApp = createBrowserApp;
