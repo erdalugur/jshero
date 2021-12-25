@@ -55,6 +55,10 @@ function getInjectionsPerRequest(_a) {
         var index = Reflect.getMetadata(jshero_constants_1.default.NEXT, instance, methodName);
         props[index] = next;
     }
+    if (Reflect.hasMetadata(constants_1.QUERY_STRING, instance, methodName)) {
+        var index = Reflect.getMetadata(constants_1.QUERY_STRING, instance, methodName);
+        props[index] = req.query;
+    }
     return props;
 }
 exports.getInjectionsPerRequest = getInjectionsPerRequest;

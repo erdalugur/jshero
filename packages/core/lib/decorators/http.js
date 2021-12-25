@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Ctx = exports.Param = exports.Next = exports.Res = exports.Req = exports.Body = exports.Options = exports.Delete = exports.Put = exports.Post = exports.Get = void 0;
+exports.QueryStringMap = exports.Ctx = exports.Param = exports.Next = exports.Res = exports.Req = exports.Body = exports.Options = exports.Delete = exports.Put = exports.Post = exports.Get = void 0;
 require("reflect-metadata");
 var jshero_constants_1 = __importDefault(require("jshero-constants"));
 var types_1 = require("../types");
@@ -92,3 +92,5 @@ function Param(parameter) {
 exports.Param = Param;
 var Ctx = function () { return createParameterDecorator(constants_1.HTTP_CONTEXT); };
 exports.Ctx = Ctx;
+var QueryStringMap = function () { return createParameterDecorator(constants_1.QUERY_STRING); };
+exports.QueryStringMap = QueryStringMap;

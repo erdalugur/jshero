@@ -30,3 +30,4 @@ export declare const Next: () => ParameterDecorator;
  */
 export declare function Param(parameter: string): ParameterDecorator;
 export declare const Ctx: () => ParameterDecorator;
+export declare const QueryStringMap: () => ParameterDecorator;

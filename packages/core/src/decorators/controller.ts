@@ -11,10 +11,6 @@ export function Controller (options?: ControllerOptions): ClassDecorator {
     if (! Reflect.hasMetadata(META_KEYS.ROUTES, target)) {
       Reflect.defineMetadata(META_KEYS.ROUTES, [], target);
     }
-    const middleware = options && options.middleware || []
-    if (middleware.length > 0) {
-      Reflect.defineMetadata(MIDDLEWARE, middleware, target)
-    }
   };
 };
 
@@ -28,11 +24,16 @@ export function ViewHandler (): MethodDecorator {
   };
 }
 
-export function InjectMiddleware(middleware: MiddlewareFn[]) {
-  return (target, propertyKey, descriptor) => {
+export function Middleware(middleware: MiddlewareFn[] = []) {
+  return (target, propertyKey = '') => {
+    if (propertyKey === '') {
+      Reflect.defineMetadata(MIDDLEWARE, middleware, target)
+      return
+    }
+
     const middlewares: InjectMiddlewareType[] = Reflect.getMetadata(INJECT_MIDDLEWARE, target.constructor) || []
     middlewares.push({
-      propertyKey: propertyKey,
+      propertyKey: propertyKey.toString(),
       middlewares: middleware
     })
     Reflect.defineMetadata(INJECT_MIDDLEWARE, middlewares, target.constructor)

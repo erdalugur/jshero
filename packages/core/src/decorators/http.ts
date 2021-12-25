@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import META_KEYS from 'jshero-constants';
 import { RouteDefinition, MethodDefinition, HttpMethods } from '../types'
-import { HTTP_CONTEXT } from '../constants';
+import { HTTP_CONTEXT, QUERY_STRING } from '../constants';
 
 function makeRouteMethod (options: MethodDefinition): MethodDecorator {
   return (target, propertyKey, descriptor) => {
@@ -77,3 +77,6 @@ export function Param (parameter: string): ParameterDecorator {
 }
 
 export const Ctx = (): ParameterDecorator => createParameterDecorator(HTTP_CONTEXT) 
+
+export const QueryStringMap = (): ParameterDecorator => createParameterDecorator(QUERY_STRING)
+

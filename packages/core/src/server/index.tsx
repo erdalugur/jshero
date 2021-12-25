@@ -13,6 +13,8 @@ export function createServer (options: CreateAppOptions) {
   const app = express()
   
   app.use(compression())
+
+  app.use(express.json())
   
   app.use(requestContextMiddleware)
 

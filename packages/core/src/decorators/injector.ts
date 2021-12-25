@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import META_KEYS from 'jshero-constants';
 import { InjectPerRequest } from '../types'
-import { HTTP_CONTEXT } from '../constants';
+import { HTTP_CONTEXT, QUERY_STRING } from '../constants';
 
 // eslint-disable-next-line new-parens
 export const Injector = new class {
@@ -42,6 +42,10 @@ export function getInjectionsPerRequest ({ instance, methodName, next, req, res 
   if(Reflect.hasMetadata(META_KEYS.NEXT, instance, methodName)){
     const index = Reflect.getMetadata(META_KEYS.NEXT, instance, methodName)
     props[index] = next
+  }
+  if(Reflect.hasMetadata(QUERY_STRING, instance, methodName)){
+    const index = Reflect.getMetadata(QUERY_STRING, instance, methodName)
+    props[index] = req.query
   }
   return props
 }
