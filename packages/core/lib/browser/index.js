@@ -14,6 +14,6 @@ function createBrowserApp(options) {
     var Main = options.bootstrap;
     var _b = (JSON.parse((_a = document.querySelector('#__JSHERO_DATA__')) === null || _a === void 0 ? void 0 : _a.textContent) || { module: '', props: {} }), props = _b.props, module = _b.module;
     var App = function () { return react_1.default.createElement(main_1.Common, { modules: modules, pageState: props[module], url: '' }); };
-    (0, react_dom_1.hydrate)(react_1.default.createElement(Main, { App: App, initialState: props }), document.querySelector('#root'));
+    (0, react_dom_1.render)(react_1.default.createElement(Main, { App: App, initialState: props }), document.querySelector('#root'));
 }
 exports.createBrowserApp = createBrowserApp;
