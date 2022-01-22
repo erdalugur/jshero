@@ -5,7 +5,7 @@ const path = require('path')
 const resolveApp = function (relativePath) {
   return path.resolve(process.cwd(), relativePath)
 }
-const publicUrlOrPath = process.env.PUBLIC_URL || ''
+const publicUrlOrPath = process.env.PUBLIC_URL || '/'
 // getPublicUrlOrPath(
 //   process.env.NODE_ENV === 'development',
 //   require(resolveApp('package.json')).homepage,

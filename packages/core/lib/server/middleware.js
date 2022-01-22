@@ -47,7 +47,6 @@ var types_1 = require("../types");
 function errorLogger(err, req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log("errorLogger", err.message);
             req.error = err;
             next();
             return [2 /*return*/];
@@ -56,12 +55,11 @@ function errorLogger(err, req, res, next) {
 }
 exports.errorLogger = errorLogger;
 function sendError(req, res) {
-    console.log("sendError", req.error);
     var statusCode = req.error && req.error.status || 404;
     var message = req.error && req.error.message || 'Not Found';
+    console.log("error log", message);
     var appName = process.env['JSHERO_APPNAME'] || 'JSHERO';
     if (statusCode === types_1.HttpStatusCode.RedirectMovedPermanent || statusCode === types_1.HttpStatusCode.RedirectTemporary) {
-        console.log(req.url);
         res.writeHead(statusCode, { location: req.error.destination }).end();
     }
     else if (typeof (message) !== 'string') {

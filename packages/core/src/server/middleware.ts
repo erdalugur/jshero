@@ -4,17 +4,15 @@ import { resolveApp } from './utils'
 import { HttpNextFunction, HttpRequest, HttpResponse, HttpStatusCode } from '../types'
 
 export async function errorLogger (err: any, req: HttpRequest, res: HttpResponse, next: HttpNextFunction) {
-  console.log("errorLogger", err.message)
   req.error = err
   next()
 }
 export function sendError (req: HttpRequest, res: HttpResponse) {
-  console.log("sendError", req.error)
   const statusCode =  req.error && req.error.status || 404
   const message = req.error && req.error.message || 'Not Found'
+  console.log("error log", message)
   const appName = process.env['JSHERO_APPNAME'] || 'JSHERO'
   if (statusCode === HttpStatusCode.RedirectMovedPermanent || statusCode === HttpStatusCode.RedirectTemporary) {
-    console.log(req.url)
     res.writeHead(statusCode, { location: req.error.destination }).end()
   } else if (typeof(message) !== 'string') {
     res.status(statusCode).send(message).end()
