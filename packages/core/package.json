@@ -19,7 +19,8 @@
     "jshero-core": "./bin/index.js"
   },
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "bootstrap": "yarn install && yarn build"
   },
   "peerDependencies": {
     "react": "^17.0.2",

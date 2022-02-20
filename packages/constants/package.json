@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/erdalugur/jshero",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "bootstrap": "yarn install && yarn build"
   }
 }

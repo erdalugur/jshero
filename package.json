@@ -1,0 +1,22 @@
+{
+  "name": "jshero",
+  "version": "1.0.0",
+  "description": "<h1 style=\"text-align: center\"> JSHERO SEO FRIENDLY REACT FRAMEWORK</h1> <p style=\"text-align: center\">Developing seo friendly (ssr) applications with React.js can be difficult without using a framework. This project saves you from complex webpack configurations and allows you to develop with Typescript, create modules in MVC architecture and also extend the Express server.</p>",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "yarn workspaces run bootstrap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erdalugur/jshero.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erdalugur/jshero/issues"
+  },
+  "homepage": "https://github.com/erdalugur/jshero#readme",
+  "workspaces": ["packages/*"],
+  "private": true
+}
